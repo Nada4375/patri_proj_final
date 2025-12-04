@@ -1,0 +1,102 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", Arial, sans-serif;
+}
+
+body {
+    background-image: url("/static/C.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.systemeinfo {
+    width: 90%;
+    max-width: 780px;
+    background: rgba(17, 27, 46, 0.9);
+    border-radius: 24px;
+    padding: 32px 28px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-left: 680px;
+
+    margin-top: 80px;
+}
+
+h1 {
+    font-size: 26px;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 18px;
+    color: #c9d6ff;
+}
+
+p {
+    font-size: 13px;
+    color: #b0b8c9;
+    margin-bottom: 26px;
+}
+
+.city {
+    display: inline-block;
+    padding: 18px 11px;
+    border-radius: 999px;
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(74, 144, 226, 0.12);
+    color: #80b5ff;
+    margin-bottom: 16px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 4px;
+}
+
+label {
+    text-align: left;
+    font-size: 13px;
+    color: #dfe4f5;
+    margin-bottom: 4px;
+}
+
+input[type="password"] {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #2b3550;
+    background: #101726;
+    color: #f9f9f9;
+    font-size: 14px;
+    outline: none;
+}
+
+input[type="password"]:focus {
+    border-color: #4A90E2;
+}
+
+button {
+    padding: 12px 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #4A90E2, #6C5CE7);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 200px;
+    margin: 10px auto;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}

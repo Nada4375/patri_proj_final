@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Système d'information urbain - Rabat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='C.css') }}">
+</head>
+
+<body>
+
+    <div class="systemeinfo">
+
+        <span class="city">Rabat – Système d'information urbain</span>
+
+        <h1>Bienvenue</h1>
+        <h2>Système d'information urbain de Rabat</h2>
+
+        <p>
+            Accédez à l’interface de consultation des données urbaines :
+            cartographie, infrastructures, équipements et base de données.
+        </p>
+
+        <!-- ROUTE FLASK -->
+        <form action="/index" method="get">
+
+
+            <div>
+                <label>Mot de passe d’accès</label>
+                <input type="password" placeholder="Entrer le mot de passe">
+            </div>
+
+            <button type="submit">Accéder au système</button>
+        </form>
+
+        <footer>
+            Prototype – Projet Système d'Information cartographique urbain.
+        </footer>
+
+    </div>
+
+</body>
+
+</html>

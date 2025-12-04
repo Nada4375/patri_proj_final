@@ -1,0 +1,301 @@
+/* ====== Mise en page générale ====== */
+body {
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: #f5f7fb;
+    margin: 0;
+    padding: 0;
+}
+
+/* ====== Titre principal ====== */
+h1 {
+    font-size: 28px;
+    color: #4A90E2;
+    margin-left: 20px;
+    margin-top: 25px;
+}
+
+.city {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: rgba(74, 144, 226, 0.12);
+    color: #80b5ff;
+    margin-bottom: 16px;
+}
+
+/* Sous-titre */
+h2 {
+    margin-left: 20px;
+    color: #ffffff;
+    margin-left: 540px;
+    font-size: 32px;
+}
+
+/* ====== CENTRAGE DES BLOCS DE FORM ====== */
+.form-container {
+    max-width: 900px;
+    /* largeur du bloc */
+    margin: 25px auto;
+    /* centrage horizontal */
+    padding: 25px;
+    width: 50%;
+    color: #f5f7fb;
+}
+
+/* ====== FORM STYLÉ ====== */
+form {
+    background: #042e7b;
+    padding: 22px 26px;
+    margin: 20px auto;
+    border-radius: 16px;
+    border: 1px solid #d6d9e5;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+    max-width: 800px;
+    width: 800px;
+    transition: 0.3s ease;
+}
+
+form:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+}
+
+/* ====== LABEL ====== */
+form label {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1c2c45;
+    margin-bottom: 6px;
+}
+
+/* ====== INPUT / SELECT / TEXTAREA ====== */
+form input,
+form select,
+form textarea {
+    width: 90px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: 10px;
+    border: 1px solid #c5cad7;
+    background: #f3f6fc;
+    font-size: 14px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+    border-color: #4A90E2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.28);
+    outline: none;
+}
+
+/* ====== BOUTON ====== */
+form button {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #4A90E2, #6C5CE7);
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 300px;
+    margin-left: 170px;
+}
+
+form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+body {
+    background: #f5f5f5;
+    font-family: "Poppins", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    text-align: center;
+    padding: 15px;
+    height: 160px;
+    background: linear-gradient(135deg, #1c2c45, #152236);
+    color: #ddd;
+    margin-bottom: 30px;
+}
+
+#map {
+    height: 600px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Boutons filtres carte */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    background: linear-gradient(135deg, #1c2c45, #152236);
+    color: #ddd;
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: 0.25s;
+    font-weight: 600;
+    font-size: 14px;
+    width: 160px;
+    height: 60px;
+}
+
+.btn:hover {
+    background: #4a90e2;
+    color: white;
+    border-color: #4a90e2;
+}
+
+/* MENU DES SECTIONS (Bâtiments, Prestataires, etc.) */
+.menu-sections {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+
+
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    top: 0;
+    z-index: 50;
+
+
+}
+
+.menu-sections button {
+    margin-top: 25px;
+    font-size: 14px;
+    border-radius: 55px;
+    cursor: pointer;
+    border: none;
+
+    width: 160px;
+    height: 60px;
+    background: linear-gradient(135deg, #1c2c45, #152236);
+    color: #ffffff;
+}
+
+.menu-sections button:hover {
+    background: #4a90e2;
+    color: white;
+}
+
+/* SECTIONS DE CONTENU (cachées au départ) */
+.content-section {
+    display: none;
+    padding: 20px;
+    background: #ffffff;
+    margin: 20px auto;
+    width: 90%;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, #1c2c45, #152236);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+table th,
+table td {
+    border: 1px solid #020b3c;
+    padding: 6px 8px;
+    font-size: 13px;
+    color: #020009;
+    background-color: white;
+}
+
+table th {
+    background: #fbfbfb;
+    color: #020009;
+}
+
+/* ----------- FORMULAIRES MODERNES ----------- */
+
+form {
+    background: #ffffff;
+    padding: 22px 26px;
+    margin-top: 18px;
+    border-radius: 16px;
+    border: 1px solid #d6d9e5;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+    max-width: 600px;
+    width: 100%;
+    transition: 0.3s ease;
+}
+
+form:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Labels */
+form label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1c2c45;
+    margin-bottom: 6px;
+}
+
+/* Inputs, select, textarea */
+form input,
+form select,
+form textarea {
+    width: 560px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: 10px;
+    border: 1px solid #c5cad7;
+    background: #f5f7fb;
+    font-size: 14px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Focus effet bleu */
+form input:focus,
+form select:focus,
+form textarea:focus {
+    border-color: #4A90E2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.28);
+    outline: none;
+}
+
+/* Boutons */
+form button {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #4A90E2, #020009);
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover */
+form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}

@@ -4,6 +4,8 @@ import queries
 
 app = Flask(__name__)
 
+
+# Default IDs in case none selected
 DEFAULT_ZONE_ID = 1
 DEFAULT_TYPE_ID = 1
 DEFAULT_OWNER_ID = 1
@@ -21,16 +23,21 @@ def index():
     conn = get_connection()
     cur = conn.cursor()
 
-    # Valeurs par défaut (uniques)
+    # Création des valeurs par défaut si elles n’existent pas
     cur.execute("INSERT INTO zone (nom_zone) VALUES ('Default Zone') ON CONFLICT DO NOTHING;")
     cur.execute("INSERT INTO type_batiment (libelle) VALUES ('Default Type') ON CONFLICT DO NOTHING;")
-    cur.execute("INSERT INTO proprietaire (nom_proprietaire, type_proprietaire) VALUES ('Default Owner','Privé') ON CONFLICT DO NOTHING;")
+    cur.execute("""
+        INSERT INTO proprietaire (nom_proprietaire, type_proprietaire) 
+        VALUES ('Default Owner','Privé') 
+        ON CONFLICT DO NOTHING;
+    """)
     conn.commit()
 
     # BATIMENTS
     cur.execute("""
-        SELECT b.Id_batiment, b.nom_batiment, b.date_construction, b.niveau_protection,
-               z.nom_zone, t.libelle, p.nom_proprietaire
+        SELECT b.Id_batiment, b.nom_batiment, b.adresse_batiment, b.altitude, b.longitude,
+               b.date_construction, b.niveau_protection,
+               z.nom_zone, t.libelle, p.nom_proprietaire, p.type_proprietaire, p.contact
         FROM batiment b
         JOIN zone z ON b.Id_zone = z.Id_zone
         JOIN type_batiment t ON b.Id_type = t.Id_type
@@ -72,6 +79,27 @@ def index():
     """)
     documents = cur.fetchall()
 
+    # ZONES
+    cur.execute("SELECT Id_zone, nom_zone FROM zone ORDER BY Id_zone")
+    zones = cur.fetchall()
+
+    # TYPES
+    cur.execute("SELECT Id_type, libelle FROM type_batiment ORDER BY Id_type")
+    types = cur.fetchall()
+
+    # PROPRIETAIRES
+    cur.execute("SELECT Id_proprietaire, nom_proprietaire, type_proprietaire, contact FROM proprietaire ORDER BY Id_proprietaire")
+    proprietaires = cur.fetchall()
+
+    # ETAT CONSERVATION
+    cur.execute("""
+        SELECT b.nom_batiment, ec.date_etat, ec.etat
+        FROM etat_conservation ec
+        JOIN batiment b ON ec.Id_batiment = b.Id_batiment
+        ORDER BY ec.date_etat DESC;
+    """)
+    etat_conservation = cur.fetchall()
+
     cur.close()
     conn.close()
 
@@ -80,7 +108,11 @@ def index():
                            prestataires=prestataires,
                            interventions=interventions,
                            inspections=inspections,
-                           documents=documents)
+                           documents=documents,
+                           zones=zones,
+                           types=types,
+                           proprietaires=proprietaires,
+                           etat_conservation=etat_conservation)
 
 
 # -------------------- AJOUT BATIMENT --------------------
@@ -88,6 +120,7 @@ def index():
 def add_batiment():
     try:
         nom = request.form["name"]
+        adresse = request.form.get("adresse", "")
         year = request.form["year"]
         etat = request.form["etat"]
         lat = request.form["latitude"]
@@ -100,9 +133,10 @@ def add_batiment():
 
         cur.execute("""
             INSERT INTO batiment 
-            (nom_batiment, Id_zone, Id_type, Id_proprietaire, date_construction, altitude, longitude, niveau_protection)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """, (nom, DEFAULT_ZONE_ID, DEFAULT_TYPE_ID, DEFAULT_OWNER_ID,
+            (nom_batiment, adresse_batiment, Id_zone, Id_type, Id_proprietaire, 
+             date_construction, altitude, longitude, niveau_protection)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (nom, adresse, DEFAULT_ZONE_ID, DEFAULT_TYPE_ID, DEFAULT_OWNER_ID,
               date_construction, lat, lon, etat))
 
         conn.commit()
@@ -120,7 +154,7 @@ def add_prestataire():
     try:
         nom = request.form["nom"]
         type_p = request.form["type"]
-        contact = request.form["contact"]
+        contact = request.form.get("contact", "")
 
         conn = get_connection()
         cur = conn.cursor()
@@ -133,6 +167,7 @@ def add_prestataire():
         cur.close()
         conn.close()
         return redirect("/index")
+
     except Exception as e:
         return f"Erreur add_prestataire : {e}"
 
@@ -145,7 +180,7 @@ def add_intervention():
         pres = request.form["prestataire"]
         date_t = request.form["date_travaux"]
         type_t = request.form["type_travaux"]
-        cout = request.form["cout"] or None
+        cout = request.form.get("cout") or None
 
         conn = get_connection()
         cur = conn.cursor()
@@ -158,6 +193,7 @@ def add_intervention():
         cur.close()
         conn.close()
         return redirect("/index")
+
     except Exception as e:
         return f"Erreur add_intervention : {e}"
 
@@ -168,7 +204,7 @@ def add_inspection():
     try:
         bat = request.form["batiment"]
         date_i = request.form["date_inspection"]
-        rapport = request.form["rapport"]
+        rapport = request.form.get("rapport", "")
 
         conn = get_connection()
         cur = conn.cursor()
@@ -181,6 +217,7 @@ def add_inspection():
         cur.close()
         conn.close()
         return redirect("/index")
+
     except Exception as e:
         return f"Erreur add_inspection : {e}"
 
@@ -191,7 +228,7 @@ def add_document():
     try:
         bat = request.form["batiment"]
         chemin = request.form["chemin"]
-        type_doc = request.form["type_doc"]
+        type_doc = request.form.get("type_doc", "")
 
         conn = get_connection()
         cur = conn.cursor()
@@ -204,6 +241,7 @@ def add_document():
         cur.close()
         conn.close()
         return redirect("/index")
+
     except Exception as e:
         return f"Erreur add_document : {e}"
 
@@ -225,6 +263,7 @@ def rapports():
                            restaures=restaures,
                            cout_quartier=cout_quartier,
                            prestataires=prestataires)
+
 
 
 # -------------------- LANCEMENT --------------------

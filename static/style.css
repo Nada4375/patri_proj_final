@@ -14,11 +14,11 @@ h1 {
     margin-top: 25px;
 }
 
-.city {
+#ci {
     display: inline-block;
     padding: 6px 14px;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 17px;
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;

@@ -1,0 +1,127 @@
+/* ======================================================
+============= CARTE LEAFLET RABAT ============
+====================================================== */
+
+/* ----------- CARTE LIMITÉE À RABAT ----------- */
+
+// Limites géographiques exactes de Rabat (de Témara au Bouregreg)
+const rabatBounds = L.latLngBounds(
+[33.940, -6.950], // Sud-Ouest
+[34.120, -6.680] // Nord-Est
+);
+
+// Création de la carte
+const map = L.map('map', {
+maxBounds: rabatBounds, // Empêche de sortir de Rabat
+maxBoundsViscosity: 1.0, // Rebond doux sur les limites
+minZoom: 12, // Empêche de trop dézoomer
+maxZoom: 18
+}).setView([34.020, -6.820], 13); // Centre parfait de Rabat
+
+// Fond de carte OSM
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+attribution: "© OpenStreetMap contributors"
+}).addTo(map);
+
+
+/* === LAYERS === */
+const monuments = L.layerGroup();
+const buildings = L.layerGroup();
+const jardins = L.layerGroup();
+
+
+/* ======================================================
+============= MONUMENTS ==============
+====================================================== */
+const monumentsData = [
+{ name: "Tour Hassan", lat: 34.024259, long: -6.822222 },
+{ name: "Mausolée Mohammed V", lat: 34.022805, long: -6.822462 },
+{ name: "Kasbah des Oudayas", lat: 34.031287, long: -6.836695 },
+{ name: "Chellah", lat: 34.010873, long: -6.820784 },
+{ name: "Bab Rouah", lat: 34.017884, long: -6.842290 },
+{ name: "Musée Mohammed VI d’Art Moderne", lat: 34.015145, long: -6.830646 },
+{ name: "Ancienne Médina de Rabat", lat: 34.026836, long: -6.837039 },
+{ name: "Bab El Had", lat: 34.022449, long: -6.837110 },
+{ name: "Bab Oudaïa", lat: 34.030713, long: -6.840454 }
+];
+
+monumentsData.forEach(m =>
+L.marker([m.lat, m.long]).bindPopup("🏛️ <b>" + m.name + "</b>").addTo(monuments)
+);
+
+
+/* ======================================================
+============= JARDINS =============
+====================================================== */
+const jardinsData = [
+{ name: "Jardin d’Essais Botaniques", lat: 34.002600, long: -6.846900 },
+{ name: "Forêt Ibn Sina (Hilton)", lat: 34.007500, long: -6.867300 },
+{ name: "Jardin Nouzhat Hassan", lat: 34.019900, long: -6.836000 },
+{ name: "Parc Hassan II", lat: 34.015900, long: -6.824600 },
+{ name: "Jardins Exotiques Bouknadel", lat: 34.140300, long: -6.663100 },
+{ name: "Parc Zoologique de Rabat", lat: 33.977500, long: -6.866900 },
+{ name: "Jardin Tour Hassan", lat: 34.024200, long: -6.821500 },
+{ name: "Jardin de l’Agdal", lat: 34.010800, long: -6.836900 },
+{ name: "Parc Oudayas", lat: 34.027900, long: -6.841400 },
+{ name: "Jardin Ibn Rochd", lat: 34.020300, long: -6.832500 }
+];
+jardinsData.forEach(j =>
+L.marker([j.lat, j.long]).bindPopup("🌳 <b>" + j.name + "</b>").addTo(jardins)
+);
+
+
+/* ======================================================
+=========== BÂTIMENTS ADMINISTRATIFS ===========
+====================================================== */
+const buildingsData = [
+{ name: "Parlement du Maroc", lat: 34.019000, long: -6.836000 },
+{ name: "Ministère de l’Intérieur", lat: 34.018200, long: -6.832000 },
+{ name: "Gare Rabat Agdal", lat: 34.002000, long: -6.836000 },
+{ name: "Gare Rabat Ville", lat: 34.020000, long: -6.836000 },
+{ name: "Hôpital Avicenne", lat: 34.006000, long: -6.855000 },
+{ name: "Hôpital Ibn Sina", lat: 34.005000, long: -6.850000 },
+{ name: "Palais Royal", lat: 34.005000, long: -6.824000 },
+{ name: "Siège du Gouvernement", lat: 34.018000, long: -6.829000 }
+];
+buildingsData.forEach(b =>
+L.marker([b.lat, b.long]).bindPopup("🏢 <b>" + b.name + "</b>").addTo(buildings)
+);
+
+
+/* ======================================================
+============= AFFICHAGE PAR DÉFAUT ===============
+====================================================== */
+monuments.addTo(map);
+buildings.addTo(map);
+jardins.addTo(map);
+
+
+/* ======================================================
+============= FILTRES CARTE =============
+====================================================== */
+
+function showAll() {
+monuments.addTo(map);
+buildings.addTo(map);
+jardins.addTo(map);
+}
+
+function showMonuments() {
+map.removeLayer(buildings);
+map.removeLayer(jardins);
+monuments.addTo(map);
+}
+
+function showBuildings() {
+map.removeLayer(monuments);
+map.removeLayer(jardins);
+buildings.addTo(map);
+}
+
+function showJardins() {
+map.removeLayer(monuments);
+map.removeLayer(buildings);
+jardins.addTo(map);
+}
+
+</script>

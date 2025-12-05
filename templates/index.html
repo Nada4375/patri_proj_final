@@ -1,523 +1,539 @@
-<!DOCTYPE html>
-<html lang="fr">
+<<!DOCTYPE html>
+    <html lang="fr">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Gestion Patrimoine + Carte Rabat</title>
+    <head>
+        <meta charset="UTF-8">
+        <title>Gestion Patrimoine + Carte Rabat</title>
 
-    <!-- CSS Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Ton CSS Flask -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
+        <!-- CSS Leaflet -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <!-- Ton CSS Flask -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
 
-<body>
+    <body>
 
-    <!-- ========= SECTION CARTE ========= -->
-    <header>
-        <span id="ci">Rabat – Système d'information urbain</span>
-        <h1>🗺 Cartographie du patrimoine de Rabat</h1>
-        <p>Monuments, bâtiments administratifs et jardins</p>
-    </header>
+        <!-- ========= SECTION CARTE ========= -->
+        <header>
+            <span id="ci">Rabat – Système d'information urbain</span>
+            <h1>🗺 Cartographie du patrimoine de Rabat</h1>
+            <p>Monuments, bâtiments administratifs et jardins</p>
+        </header>
 
-    <!-- Boutons de filtre de la CARTE -->
-    <div class="controls">
-        <button class="btn" onclick="showAll()">🌍 Tout afficher</button>
-        <button class="btn" onclick="showMonuments()">🏛 Monuments</button>
-        <button class="btn" onclick="showBuildings()">🏢 Bâtiments</button>
-        <button class="btn" onclick="showJardins()">🌳 Jardins</button>
-    </div>
+        <!-- Boutons de filtre de la CARTE -->
+        <div class="controls">
+            <button class="btn" onclick="showAll()">🌍 Tout afficher</button>
+            <button class="btn" onclick="showMonuments()">🏛 Monuments</button>
+            <button class="btn" onclick="showBuildings()">🏢 Bâtiments</button>
+            <button class="btn" onclick="showJardins()">🌳 Jardins</button>
+        </div>
 
-    <!-- Conteneur de la carte -->
-    <div id="map"></div>
-    <!-- ========= MENU PRINCIPAL DES SECTIONS ========= -->
-    <div class="menu-sections">
-        <button onclick="openSection('batiments')">🏛 Bâtiments</button>
-        <button onclick="openSection('prestataires')">🧱 Prestataires</button>
-        <button onclick="openSection('interventions')">🛠 Interventions</button>
-        <button onclick="openSection('inspections')">🔍 Inspections</button>
-        <button onclick="openSection('documents')">📄 Documents</button>
-        <button onclick="openSection('zones')">🌍 Zones</button>
-        <button onclick="openSection('types')">🏗 Types de Bâtiment</button>
-        <button onclick="openSection('proprietaires')">👤 Propriétaires</button>
-        <button onclick="openSection('etat_conservation')">📌 État Conservation</button>
-        <button onclick="openSection('rapports')">📊 Rapports</button>
-    </div>
+        <!-- Conteneur de la carte -->
+        <div id="map"></div>
+        <!-- ========= MENU PRINCIPAL DES SECTIONS ========= -->
+        <div class="menu-sections">
+            <button onclick="openSection('batiments')">🏛 Bâtiments</button>
+            <button onclick="openSection('prestataires')">🧱 Prestataires</button>
+            <button onclick="openSection('interventions')">🛠 Interventions</button>
+            <button onclick="openSection('inspections')">🔍 Inspections</button>
+            <button onclick="openSection('documents')">📄 Documents</button>
+            <button onclick="openSection('zones')">🌍 Zones</button>
+            <button onclick="openSection('types')">🏗 Types de Bâtiment</button>
+            <button onclick="openSection('proprietaires')">👤 Propriétaires</button>
+            <button onclick="openSection('etat_conservation')">📌 État Conservation</button>
+            <button onclick="openSection('rapports')">📊 Rapports</button>
+        </div>
 
-    <!-- ========= SECTIONS CONTENU ========= -->
+        <!-- ========= SECTIONS CONTENU ========= -->
 
-    <!-- ZONES -->
-    <section id="zones" class="content-section" style="display:none;">
-        <h2>Gestion des Zones</h2>
+        <!-- ZONES -->
+        <section id="zones" class="content-section" style="display:none;">
+            <h2>Gestion des Zones</h2>
 
-        <h3>Ajouter une zone</h3>
-        <form action="/add_zone" method="POST">
-            <label>Nom Zone:</label><input type="text" name="nom_zone" required><br>
-            <button type="submit">Ajouter</button>
-        </form>
-
-        <h3>Liste des Zones</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-            </tr>
-            {% for z in zones %}
-            <tr>
-                <td>{{ z[0] }}</td>
-                <td>{{ z[1] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
-
-    <!-- TYPES DE BATIMENT -->
-    <section id="types" class="content-section" style="display:none;">
-        <h2>Gestion des Types de Bâtiment</h2>
-
-        <h3>Ajouter un type</h3>
-        <form action="/add_type" method="POST">
-            <label>Libellé:</label><input type="text" name="libelle" required><br>
-            <button type="submit">Ajouter</button>
-        </form>
-
-        <h3>Liste des Types</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Libellé</th>
-            </tr>
-            {% for t in types %}
-            <tr>
-                <td>{{ t[0] }}</td>
-                <td>{{ t[1] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
-
-    <!-- PROPRIETAIRES -->
-    <section id="proprietaires" class="content-section" style="display:none;">
-        <h2>Gestion des Propriétaires</h2>
-
-        <h3>Ajouter un propriétaire</h3>
-        <form action="/add_proprietaire" method="POST">
-            <label>Nom:</label><input type="text" name="nom_proprietaire" required><br>
-            <label>Type:</label><input type="text" name="type_proprietaire" required><br>
-            <label>Contact:</label><input type="text" name="contact"><br>
-            <button type="submit">Ajouter</button>
-        </form>
-
-        <h3>Liste des Propriétaires</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Type</th>
-                <th>Contact</th>
-            </tr>
-            {% for p in proprietaires %}
-            <tr>
-                <td>{{ p[0] }}</td>
-                <td>{{ p[1] }}</td>
-                <td>{{ p[2] }}</td>
-                <td>{{ p[3] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
-
-    <!-- ETAT DE CONSERVATION -->
-    <section id="etat_conservation" class="content-section" style="display:none;">
-        <h2>État de Conservation des Bâtiments</h2>
-
-        <h3>Liste des états</h3>
-        <table>
-            <tr>
-                <th>Bâtiment</th>
-                <th>Date</th>
-                <th>État</th>
-            </tr>
-            {% for e in etat_conservation %}
-            <tr>
-                <td>{{ e[0] }}</td>
-                <td>{{ e[1] }}</td>
-                <td>{{ e[2] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
-
-    <!-- BÂTIMENTS -->
-    <section id="batiments" class="content-section">
-        <h2>Gestion des Bâtiments</h2>
-        <div class="form-container">
-            <h3>Ajouter un bâtiment</h3>
-            <form action="/add_batiment" method="POST">
-                <label>Nom:</label><input type="text" name="name" required><br>
-                <label>Année:</label><input type="number" name="year" min="1800" max="2100" required><br>
-                <label>État / Protection:</label><input type="text" name="etat" required><br>
-                <label>Latitude:</label><input type="text" name="latitude" required><br>
-                <label>Longitude:</label><input type="text" name="longitude" required><br>
-                <label>Zone:</label>
-                <select name="zone">
-                    {% for z in zones %}
-                    <option value="{{ z[0] }}">{{ z[1] }}</option>
-                    {% endfor %}
-                </select><br>
-                <label>Type:</label>
-                <select name="type">
-                    {% for t in types %}
-                    <option value="{{ t[0] }}">{{ t[1] }}</option>
-                    {% endfor %}
-                </select><br>
-                <label>Propriétaire:</label>
-                <select name="proprietaire">
-                    {% for p in proprietaires %}
-                    <option value="{{ p[0] }}">{{ p[1] }}</option>
-                    {% endfor %}
-                </select><br>
+            <h3>Ajouter une zone</h3>
+            <form action="/add_zone" method="POST">
+                <label>Nom Zone:</label><input type="text" name="nom_zone" required><br>
                 <button type="submit">Ajouter</button>
             </form>
 
-            <h3>Liste des Bâtiments</h3>
+            <h3>Liste des Zones</h3>
             <table>
                 <tr>
                     <th>ID</th>
                     <th>Nom</th>
-                    <th>Année</th>
-                    <th>État</th>
-                    <th>Zone</th>
-                    <th>Type</th>
-                    <th>Propriétaire</th>
                 </tr>
-                {% for b in batiments %}
+                {% for z in zones %}
                 <tr>
-                    <td>{{ b[0] }}</td>
-                    <td>{{ b[1] }}</td>
-                    <td>{{ b[2] }}</td>
-                    <td>{{ b[3] }}</td>
-                    <td>{{ b[4] }}</td>
-                    <td>{{ b[5] }}</td>
-                    <td>{{ b[6] }}</td>
+                    <td>{{ z[0] }}</td>
+                    <td>{{ z[1] }}</td>
                 </tr>
                 {% endfor %}
             </table>
-    </section>
+        </section>
 
-    <!-- PRESTATAIRES -->
-    <section id="prestataires" class="content-section" style="display:none;">
-        <h2>Gestion des Prestataires</h2>
+        <!-- TYPES DE BATIMENT -->
+        <section id="types" class="content-section" style="display:none;">
+            <h2>Gestion des Types de Bâtiment</h2>
 
-        <h3>Ajouter un prestataire</h3>
-        <form action="/add_prestataire" method="POST">
-            <label>Nom:</label><input type="text" name="nom" required><br>
-            <label>Type:</label><input type="text" name="type" required><br>
-            <label>Contact:</label><input type="text" name="contact"><br>
-            <button type="submit">Ajouter</button>
-        </form>
+            <h3>Ajouter un type</h3>
+            <form action="/add_type" method="POST">
+                <label>Libellé:</label><input type="text" name="libelle" required><br>
+                <button type="submit">Ajouter</button>
+            </form>
 
-        <h3>Liste des Prestataires</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Type</th>
-                <th>Contact</th>
-            </tr>
-            {% for p in prestataires %}
-            <tr>
-                <td>{{ p[0] }}</td>
-                <td>{{ p[1] }}</td>
-                <td>{{ p[2] }}</td>
-                <td>{{ p[3] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
-
-    <!-- INTERVENTIONS -->
-    <section id="interventions" class="content-section" style="display:none;">
-        <h2>Gestion des Interventions</h2>
-
-        <h3>Ajouter une intervention</h3>
-        <form action="/add_intervention" method="POST">
-            <label>Bâtiment:</label>
-            <select name="batiment">
-                {% for b in batiments %}
-                <option value="{{ b[0] }}">{{ b[1] }}</option>
+            <h3>Liste des Types</h3>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Libellé</th>
+                </tr>
+                {% for t in types %}
+                <tr>
+                    <td>{{ t[0] }}</td>
+                    <td>{{ t[1] }}</td>
+                </tr>
                 {% endfor %}
-            </select><br>
+            </table>
+        </section>
 
-            <label>Prestataire:</label>
-            <select name="prestataire">
+        <!-- PROPRIETAIRES -->
+        <section id="proprietaires" class="content-section" style="display:none;">
+            <h2>Gestion des Propriétaires</h2>
+
+            <h3>Ajouter un propriétaire</h3>
+            <form action="/add_proprietaire" method="POST">
+                <label>Nom:</label><input type="text" name="nom_proprietaire" required><br>
+                <label>Type:</label><input type="text" name="type_proprietaire" required><br>
+                <label>Contact:</label><input type="text" name="contact"><br>
+                <button type="submit">Ajouter</button>
+            </form>
+
+            <h3>Liste des Propriétaires</h3>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Type</th>
+                    <th>Contact</th>
+                </tr>
+                {% for p in proprietaires %}
+                <tr>
+                    <td>{{ p[0] }}</td>
+                    <td>{{ p[1] }}</td>
+                    <td>{{ p[2] }}</td>
+                    <td>{{ p[3] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
+
+        <!-- ETAT DE CONSERVATION -->
+        <section id="etat_conservation" class="content-section" style="display:none;">
+            <h2>État de Conservation des Bâtiments</h2>
+
+            <h3>Liste des états</h3>
+            <table>
+                <tr>
+                    <th>Bâtiment</th>
+                    <th>Date</th>
+                    <th>État</th>
+                </tr>
+                {% for e in etat_conservation %}
+                <tr>
+                    <td>{{ e[0] }}</td>
+                    <td>{{ e[1] }}</td>
+                    <td>{{ e[2] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
+
+        <!-- BÂTIMENTS -->
+        <section id="batiments" class="content-section">
+            <h2>Gestion des Bâtiments</h2>
+            <div class="form-container">
+                <h3>Ajouter un bâtiment</h3>
+                <form action="/add_batiment" method="POST">
+                    <label>Nom:</label><input type="text" name="name" required><br>
+                    <label>Année:</label><input type="number" name="year" min="1800" max="2100" required><br>
+                    <label>État / Protection:</label><input type="text" name="etat" required><br>
+                    <label>Latitude:</label><input type="text" name="latitude" required><br>
+                    <label>Longitude:</label><input type="text" name="longitude" required><br>
+                    <label>Adresse:</label><input type="text" name="adresse" required><br>
+                    <label>Zone:</label>
+                    <select name="zone">
+                        <option value="">Aucune</option>
+                        {% for z in zones %}
+                        <option value="{{ z[0] }}">{{ z[1] }}</option>
+                        {% endfor %}
+                    </select><br>
+                    <label>Type:</label>
+                    <select name="type">
+                        <option value="">Aucune</option>
+                        {% for t in types %}
+                        <option value="{{ t[0] }}">{{ t[1] }}</option>
+                        {% endfor %}
+                    </select><br>
+                    <label>Propriétaire:</label>
+                    <select name="proprietaire">
+                        <option value="">Aucune</option>
+                        {% for p in proprietaires %}
+                        <option value="{{ p[0] }}">{{ p[1] }}</option>
+                        {% endfor %}
+                    </select><br>
+                    <button type="submit">Ajouter</button>
+
+                </form>
+
+                <h3>Liste des Bâtiments</h3>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>adresse </th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Année</th>
+                        <th>État</th>
+                        <th>Zone</th>
+                        <th>Type</th>
+                        <th>Propriétaire</th>
+                    </tr>
+                    {% for b in batiments %}
+                    <tr>
+                        <td>{{ b[0] }}</td>
+                        <td>{{ b[1] }}</td>
+                        <td>{{ b[2] }}</td>
+                        <td>{{ b[3] }}</td>
+                        <td>{{ b[4] }}</td>
+                        <td>{{ b[5] }}</td>
+                        <td>{{ b[6] }}</td>
+                        <td>{{ b[7] }}</td>
+                        <td>{{ b[8] }}</td>
+                        <td>{{ b[9] }}</td>
+
+
+
+                    </tr>
+                    {% endfor %}
+                </table>
+        </section>
+
+        <!-- PRESTATAIRES -->
+        <section id="prestataires" class="content-section" style="display:none;">
+            <h2>Gestion des Prestataires</h2>
+
+            <h3>Ajouter un prestataire</h3>
+            <form action="/add_prestataire" method="POST">
+                <label>Nom:</label><input type="text" name="nom" required><br>
+                <label>Type:</label><input type="text" name="type" required><br>
+                <label>Contact:</label><input type="text" name="contact"><br>
+                <button type="submit">Ajouter</button>
+            </form>
+
+            <h3>Liste des Prestataires</h3>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Type</th>
+                    <th>Contact</th>
+                </tr>
                 {% for p in prestataires %}
-                <option value="{{ p[0] }}">{{ p[1] }}</option>
+                <tr>
+                    <td>{{ p[0] }}</td>
+                    <td>{{ p[1] }}</td>
+                    <td>{{ p[2] }}</td>
+                    <td>{{ p[3] }}</td>
+                </tr>
                 {% endfor %}
-            </select><br>
+            </table>
+        </section>
 
-            <label>Date:</label><input type="date" name="date_travaux" required><br>
-            <label>Type travaux:</label><input type="text" name="type_travaux" required><br>
-            <label>Coût:</label><input type="number" step="0.01" name="cout"><br>
+        <!-- INTERVENTIONS -->
+        <section id="interventions" class="content-section" style="display:none;">
+            <h2>Gestion des Interventions</h2>
 
-            <button type="submit">Ajouter</button>
-        </form>
+            <h3>Ajouter une intervention</h3>
+            <form action="/add_intervention" method="POST">
+                <label>Bâtiment:</label>
+                <select name="batiment">
+                    {% for b in batiments %}
+                    <option value="{{ b[0] }}">{{ b[1] }}</option>
+                    {% endfor %}
+                </select><br>
 
-        <h3>Liste des Interventions</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Bâtiment</th>
-                <th>Prestataire</th>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Coût</th>
-            </tr>
-            {% for i in interventions %}
-            <tr>
-                <td>{{ i[0] }}</td>
-                <td>{{ i[1] }}</td>
-                <td>{{ i[2] }}</td>
-                <td>{{ i[3] }}</td>
-                <td>{{ i[4] }}</td>
-                <td>{{ i[5] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
+                <label>Prestataire:</label>
+                <select name="prestataire">
+                    {% for p in prestataires %}
+                    <option value="{{ p[0] }}">{{ p[1] }}</option>
+                    {% endfor %}
+                </select><br>
 
-    <!-- RAPPORTS -->
-    <section id="rapports" class="content-section">
-        <h2>Rapports et Synthèses</h2>
-        <p>
-            Cette section donne accès aux rapports détaillés sur l’état du patrimoine,
-            les interventions, les prestataires et les coûts par quartier.
-        </p>
-        <p>
-            👉 <a href="/rapports">Cliquer ici pour voir les rapports détaillés</a>
-        </p>
-    </section>
+                <label>Date:</label><input type="date" name="date_travaux" required><br>
+                <label>Type travaux:</label><input type="text" name="type_travaux" required><br>
+                <label>Coût:</label><input type="number" step="0.01" name="cout"><br>
 
-    <!-- INSPECTIONS -->
-    <section id="inspections" class="content-section" style="display:none;">
-        <h2>Gestion des Inspections</h2>
+                <button type="submit">Ajouter</button>
+            </form>
 
-        <h3>Ajouter une inspection</h3>
-        <form action="/add_inspection" method="POST">
-            <label>Bâtiment:</label>
-            <select name="batiment">
-                {% for b in batiments %}
-                <option value="{{ b[0] }}">{{ b[1] }}</option>
+            <h3>Liste des Interventions</h3>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Bâtiment</th>
+                    <th>Prestataire</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Coût</th>
+                </tr>
+                {% for i in interventions %}
+                <tr>
+                    <td>{{ i[0] }}</td>
+                    <td>{{ i[1] }}</td>
+                    <td>{{ i[2] }}</td>
+                    <td>{{ i[3] }}</td>
+                    <td>{{ i[4] }}</td>
+                    <td>{{ i[5] }}</td>
+                </tr>
                 {% endfor %}
-            </select><br>
+            </table>
+        </section>
 
-            <label>Date:</label><input type="date" name="date_inspection" required><br>
-            <label>Rapport:</label><textarea name="rapport"></textarea><br>
+        <!-- INSPECTIONS -->
+        <section id="inspections" class="content-section" style="display:none;">
+            <h2>Gestion des Inspections</h2>
 
-            <button type="submit">Ajouter</button>
-        </form>
+            <h3>Ajouter une inspection</h3>
+            <form action="/add_inspection" method="POST">
+                <label>Bâtiment:</label>
+                <select name="batiment">
+                    {% for b in batiments %}
+                    <option value="{{ b[0] }}">{{ b[1] }}</option>
+                    {% endfor %}
+                </select><br>
 
-        <h3>Liste des Inspections</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Bâtiment</th>
-                <th>Date</th>
-                <th>Rapport</th>
-            </tr>
-            {% for ins in inspections %}
-            <tr>
-                <td>{{ ins[0] }}</td>
-                <td>{{ ins[1] }}</td>
-                <td>{{ ins[2] }}</td>
-                <td>{{ ins[3] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
+                <label>Date:</label><input type="date" name="date_inspection" required><br>
+                <label>Rapport:</label><textarea name="rapport"></textarea><br>
 
-    <!-- DOCUMENTS -->
-    <section id="documents" class="content-section" style="display:none;">
-        <h2>Gestion des Documents</h2>
+                <button type="submit">Ajouter</button>
+            </form>
 
-        <h3>Ajouter un document</h3>
-        <form action="/add_document" method="POST">
-            <label>Bâtiment:</label>
-            <select name="batiment">
-                {% for b in batiments %}
-                <option value="{{ b[0] }}">{{ b[1] }}</option>
+            <h3>Liste des Inspections</h3>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Bâtiment</th>
+                    <th>Date</th>
+                    <th>Rapport</th>
+                </tr>
+                {% for ins in inspections %}
+                <tr>
+                    <td>{{ ins[0] }}</td>
+                    <td>{{ ins[1] }}</td>
+                    <td>{{ ins[2] }}</td>
+                    <td>{{ ins[3] }}</td>
+                </tr>
                 {% endfor %}
-            </select><br>
+            </table>
+        </section>
 
-            <label>Chemin / Nom fichier:</label><input type="text" name="chemin" required><br>
-            <label>Type document:</label><input type="text" name="type_doc"><br>
+        <!-- DOCUMENTS -->
+        <section id="documents" class="content-section" style="display:none;">
+            <h2>Gestion des Documents</h2>
 
-            <button type="submit">Ajouter</button>
-        </form>
+            <h3>Ajouter un document</h3>
+            <form action="/add_document" method="POST">
+                <label>Bâtiment:</label>
+                <select name="batiment">
+                    {% for b in batiments %}
+                    <option value="{{ b[0] }}">{{ b[1] }}</option>
+                    {% endfor %}
+                </select><br>
 
-        <h3>Liste des Documents</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Bâtiment</th>
-                <th>Chemin</th>
-                <th>Type</th>
-            </tr>
-            {% for d in documents %}
-            <tr>
-                <td>{{ d[0] }}</td>
-                <td>{{ d[1] }}</td>
-                <td>{{ d[2] }}</td>
-                <td>{{ d[3] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
-    <!-- ========= SCRIPTS ========= -->
+                <label>Chemin / Nom fichier:</label><input type="text" name="chemin" required><br>
+                <label>Type document:</label><input type="text" name="type_doc"><br>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                <button type="submit">Ajouter</button>
+            </form>
 
-    <script>
+            <h3>Liste des Documents</h3>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Bâtiment</th>
+                    <th>Chemin</th>
+                    <th>Type</th>
+                </tr>
+                {% for d in documents %}
+                <tr>
+                    <td>{{ d[0] }}</td>
+                    <td>{{ d[1] }}</td>
+                    <td>{{ d[2] }}</td>
+                    <td>{{ d[3] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
 
-        /* ------ Gestion des sections (menu) ------ */
-        function openSection(id) {
-            document.querySelectorAll(".content-section").forEach(sec => {
-                sec.style.display = "none";
-            });
-            const el = document.getElementById(id);
-            if (el) el.style.display = "block";
-        }
-        openSection('batiments');  // Section par défaut
+        <!-- RAPPORTS -->
+        <section id="rapports" class="content-section">
+            <h2>Rapports et Synthèses</h2>
+            <p>
+                Cette section donne accès aux rapports détaillés sur l’état du patrimoine,
+                les interventions, les prestataires et les coûts par quartier.
+            </p>
+            <p>
+                👉 <a href="/rapports">Cliquer ici pour voir les rapports détaillés</a>
+            </p>
+        </section>
+        </div>
 
-        /* ======================================================
-           =============     CARTE LEAFLET RABAT     ============
-           ====================================================== */
+        <!-- ========= SCRIPTS ========= -->
 
-        /* ----------- CARTE LIMITÉE À RABAT ----------- */
+        <!-- Leaflet JS -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-        // Limites géographiques exactes de Rabat (de Témara au Bouregreg)
-        const rabatBounds = L.latLngBounds(
-            [33.940, -6.950],   // Sud-Ouest
-            [34.120, -6.680]    // Nord-Est
-        );
+        <script>
 
-        // Création de la carte
-        const map = L.map('map', {
-            maxBounds: rabatBounds,          // Empêche de sortir de Rabat
-            maxBoundsViscosity: 1.0,         // Rebond doux sur les limites
-            minZoom: 12,                     // Empêche de trop dézoomer
-            maxZoom: 18
-        }).setView([34.020, -6.820], 13);    // Centre parfait de Rabat
+            /* ------ Gestion des sections (menu) ------ */
+            function openSection(id) {
+                document.querySelectorAll(".content-section").forEach(sec => {
+                    sec.style.display = "none";
+                });
+                const el = document.getElementById(id);
+                if (el) el.style.display = "block";
+            }
+            openSection('batiments');  // Section par défaut
 
-        // Fond de carte OSM
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: "© OpenStreetMap contributors"
-        }).addTo(map);
+            /* ======================================================
+               =============     CARTE LEAFLET RABAT     ============
+               ====================================================== */
 
+            /* ----------- CARTE LIMITÉE À RABAT ----------- */
 
-        /* === LAYERS === */
-        const monuments = L.layerGroup();
-        const buildings = L.layerGroup();
-        const jardins = L.layerGroup();
+            // Limites géographiques exactes de Rabat (de Témara au Bouregreg)
+            const rabatBounds = L.latLngBounds(
+                [33.940, -6.950],   // Sud-Ouest
+                [34.120, -6.680]    // Nord-Est
+            );
 
+            // Création de la carte
+            const map = L.map('map', {
+                maxBounds: rabatBounds,          // Empêche de sortir de Rabat
+                maxBoundsViscosity: 1.0,         // Rebond doux sur les limites
+                minZoom: 12,                     // Empêche de trop dézoomer
+                maxZoom: 18
+            }).setView([34.020, -6.820], 13);    // Centre parfait de Rabat
 
-        /* ======================================================
-           =============         MONUMENTS          ==============
-           ====================================================== */
-        const monumentsData = [
-            { name: "Tour Hassan", lat: 34.024259, long: -6.822222 },
-            { name: "Mausolée Mohammed V", lat: 34.022805, long: -6.822462 },
-            { name: "Kasbah des Oudayas", lat: 34.031287, long: -6.836695 },
-            { name: "Chellah", lat: 34.010873, long: -6.820784 },
-            { name: "Bab Rouah", lat: 34.017884, long: -6.842290 },
-            { name: "Musée Mohammed VI d’Art Moderne", lat: 34.015145, long: -6.830646 },
-            { name: "Ancienne Médina de Rabat", lat: 34.026836, long: -6.837039 },
-            { name: "Bab El Had", lat: 34.022449, long: -6.837110 },
-            { name: "Bab Oudaïa", lat: 34.030713, long: -6.840454 }
-        ];
-
-        monumentsData.forEach(m =>
-            L.marker([m.lat, m.long]).bindPopup("🏛️ <b>" + m.name + "</b>").addTo(monuments)
-        );
-
-
-        /* ======================================================
-           =============            JARDINS          =============
-           ====================================================== */
-        const jardinsData = [
-            { name: "Jardin d’Essais Botaniques", lat: 34.002600, long: -6.846900 },
-            { name: "Forêt Ibn Sina (Hilton)", lat: 34.007500, long: -6.867300 },
-            { name: "Jardin Nouzhat Hassan", lat: 34.019900, long: -6.836000 },
-            { name: "Parc Hassan II", lat: 34.015900, long: -6.824600 },
-            { name: "Jardins Exotiques Bouknadel", lat: 34.140300, long: -6.663100 },
-            { name: "Parc Zoologique de Rabat", lat: 33.977500, long: -6.866900 },
-            { name: "Jardin Tour Hassan", lat: 34.024200, long: -6.821500 },
-            { name: "Jardin de l’Agdal", lat: 34.010800, long: -6.836900 },
-            { name: "Parc Oudayas", lat: 34.027900, long: -6.841400 },
-            { name: "Jardin Ibn Rochd", lat: 34.020300, long: -6.832500 }
-        ];
-        jardinsData.forEach(j =>
-            L.marker([j.lat, j.long]).bindPopup("🌳 <b>" + j.name + "</b>").addTo(jardins)
-        );
+            // Fond de carte OSM
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "© OpenStreetMap contributors"
+            }).addTo(map);
 
 
-        /* ======================================================
-           ===========    BÂTIMENTS ADMINISTRATIFS    ===========
-           ====================================================== */
-        const buildingsData = [
-            { name: "Parlement du Maroc", lat: 34.019000, long: -6.836000 },
-            { name: "Ministère de l’Intérieur", lat: 34.018200, long: -6.832000 },
-            { name: "Gare Rabat Agdal", lat: 34.002000, long: -6.836000 },
-            { name: "Gare Rabat Ville", lat: 34.020000, long: -6.836000 },
-            { name: "Hôpital Avicenne", lat: 34.006000, long: -6.855000 },
-            { name: "Hôpital Ibn Sina", lat: 34.005000, long: -6.850000 },
-            { name: "Palais Royal", lat: 34.005000, long: -6.824000 },
-            { name: "Siège du Gouvernement", lat: 34.018000, long: -6.829000 }
-        ];
-        buildingsData.forEach(b =>
-            L.marker([b.lat, b.long]).bindPopup("🏢 <b>" + b.name + "</b>").addTo(buildings)
-        );
+            /* === LAYERS === */
+            const monuments = L.layerGroup();
+            const buildings = L.layerGroup();
+            const jardins = L.layerGroup();
 
 
-        /* ======================================================
-           =============   AFFICHAGE PAR DÉFAUT   ===============
-           ====================================================== */
-        monuments.addTo(map);
-        buildings.addTo(map);
-        jardins.addTo(map);
+            /* ======================================================
+               =============         MONUMENTS          ==============
+               ====================================================== */
+            const monumentsData = [
+                { name: "Tour Hassan", lat: 34.024259, long: -6.822222 },
+                { name: "Mausolée Mohammed V", lat: 34.022805, long: -6.822462 },
+                { name: "Kasbah des Oudayas", lat: 34.031287, long: -6.836695 },
+                { name: "Chellah", lat: 34.010873, long: -6.820784 },
+                { name: "Bab Rouah", lat: 34.017884, long: -6.842290 },
+                { name: "Musée Mohammed VI d’Art Moderne", lat: 34.015145, long: -6.830646 },
+                { name: "Ancienne Médina de Rabat", lat: 34.026836, long: -6.837039 },
+                { name: "Bab El Had", lat: 34.022449, long: -6.837110 },
+                { name: "Bab Oudaïa", lat: 34.030713, long: -6.840454 }
+            ];
+
+            monumentsData.forEach(m =>
+                L.marker([m.lat, m.long]).bindPopup("🏛️ <b>" + m.name + "</b>").addTo(monuments)
+            );
 
 
-        /* ======================================================
-           =============        FILTRES CARTE        =============
-           ====================================================== */
+            /* ======================================================
+               =============            JARDINS          =============
+               ====================================================== */
+            const jardinsData = [
+                { name: "Jardin d’Essais Botaniques", lat: 34.002600, long: -6.846900 },
+                { name: "Forêt Ibn Sina (Hilton)", lat: 34.007500, long: -6.867300 },
+                { name: "Jardin Nouzhat Hassan", lat: 34.019900, long: -6.836000 },
+                { name: "Parc Hassan II", lat: 34.015900, long: -6.824600 },
+                { name: "Jardins Exotiques Bouknadel", lat: 34.140300, long: -6.663100 },
+                { name: "Parc Zoologique de Rabat", lat: 33.977500, long: -6.866900 },
+                { name: "Jardin Tour Hassan", lat: 34.024200, long: -6.821500 },
+                { name: "Jardin de l’Agdal", lat: 34.010800, long: -6.836900 },
+                { name: "Parc Oudayas", lat: 34.027900, long: -6.841400 },
+                { name: "Jardin Ibn Rochd", lat: 34.020300, long: -6.832500 }
+            ];
+            jardinsData.forEach(j =>
+                L.marker([j.lat, j.long]).bindPopup("🌳 <b>" + j.name + "</b>").addTo(jardins)
+            );
 
-        function showAll() {
+
+            /* ======================================================
+               ===========    BÂTIMENTS ADMINISTRATIFS    ===========
+               ====================================================== */
+            const buildingsData = [
+                { name: "Parlement du Maroc", lat: 34.019000, long: -6.836000 },
+                { name: "Ministère de l’Intérieur", lat: 34.018200, long: -6.832000 },
+                { name: "Gare Rabat Agdal", lat: 34.002000, long: -6.836000 },
+                { name: "Gare Rabat Ville", lat: 34.020000, long: -6.836000 },
+                { name: "Hôpital Avicenne", lat: 34.006000, long: -6.855000 },
+                { name: "Hôpital Ibn Sina", lat: 34.005000, long: -6.850000 },
+                { name: "Palais Royal", lat: 34.005000, long: -6.824000 },
+                { name: "Siège du Gouvernement", lat: 34.018000, long: -6.829000 }
+            ];
+            buildingsData.forEach(b =>
+                L.marker([b.lat, b.long]).bindPopup("🏢 <b>" + b.name + "</b>").addTo(buildings)
+            );
+
+
+            /* ======================================================
+               =============   AFFICHAGE PAR DÉFAUT   ===============
+               ====================================================== */
             monuments.addTo(map);
             buildings.addTo(map);
             jardins.addTo(map);
-        }
 
-        function showMonuments() {
-            map.removeLayer(buildings);
-            map.removeLayer(jardins);
-            monuments.addTo(map);
-        }
 
-        function showBuildings() {
-            map.removeLayer(monuments);
-            map.removeLayer(jardins);
-            buildings.addTo(map);
-        }
+            /* ======================================================
+               =============        FILTRES CARTE        =============
+               ====================================================== */
 
-        function showJardins() {
-            map.removeLayer(monuments);
-            map.removeLayer(buildings);
-            jardins.addTo(map);
-        }
+            function showAll() {
+                monuments.addTo(map);
+                buildings.addTo(map);
+                jardins.addTo(map);
+            }
 
-    </script>
+            function showMonuments() {
+                map.removeLayer(buildings);
+                map.removeLayer(jardins);
+                monuments.addTo(map);
+            }
 
-</body>
+            function showBuildings() {
+                map.removeLayer(monuments);
+                map.removeLayer(jardins);
+                buildings.addTo(map);
+            }
 
-</html>
+            function showJardins() {
+                map.removeLayer(monuments);
+                map.removeLayer(buildings);
+                jardins.addTo(map);
+            }
+
+        </script>
+
+    </body>
+
+    </html>

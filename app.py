@@ -23,15 +23,7 @@ def index():
     conn = get_connection()
     cur = conn.cursor()
 
-    # Création des valeurs par défaut si elles n’existent pas
-    cur.execute("INSERT INTO zone (nom_zone) VALUES ('Default Zone') ON CONFLICT DO NOTHING;")
-    cur.execute("INSERT INTO type_batiment (libelle) VALUES ('Default Type') ON CONFLICT DO NOTHING;")
-    cur.execute("""
-        INSERT INTO proprietaire (nom_proprietaire, type_proprietaire) 
-        VALUES ('Default Owner','Privé') 
-        ON CONFLICT DO NOTHING;
-    """)
-    conn.commit()
+
 
     # BATIMENTS
     cur.execute("""
@@ -115,7 +107,6 @@ def index():
                            etat_conservation=etat_conservation)
 
 
-# -------------------- AJOUT BATIMENT --------------------
 @app.route("/add_batiment", methods=["POST"])
 def add_batiment():
     try:
@@ -125,6 +116,10 @@ def add_batiment():
         etat = request.form["etat"]
         lat = request.form["latitude"]
         lon = request.form["longitude"]
+        zone = request.form.get("zone")
+        zone_id = zone if zone else None
+        type_b = request.form["type"]
+        prop = request.form["proprietaire"]
 
         date_construction = f"{year}-01-01"
 
@@ -136,7 +131,7 @@ def add_batiment():
             (nom_batiment, adresse_batiment, Id_zone, Id_type, Id_proprietaire, 
              date_construction, altitude, longitude, niveau_protection)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (nom, adresse, DEFAULT_ZONE_ID, DEFAULT_TYPE_ID, DEFAULT_OWNER_ID,
+        """, (nom, adresse, zone, type_b, prop,
               date_construction, lat, lon, etat))
 
         conn.commit()
@@ -146,6 +141,7 @@ def add_batiment():
 
     except Exception as e:
         return f"Erreur add_batiment : {e}"
+
 
 
 # -------------------- AJOUT PRESTATAIRE --------------------
@@ -264,6 +260,68 @@ def rapports():
                            cout_quartier=cout_quartier,
                            prestataires=prestataires)
 
+
+
+@app.route("/add_zone", methods=["POST"])
+def add_zone():
+    try:
+        nom = request.form["nom_zone"]
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("INSERT INTO zone (nom_zone) VALUES (%s)", (nom,))
+        conn.commit()
+
+        cur.close()
+        conn.close()
+        return redirect("/index")
+
+    except Exception as e:
+        return f"Erreur add_zone : {e}"
+
+#type
+@app.route("/add_type", methods=["POST"])
+def add_type():
+    try:
+        lib = request.form["libelle"]
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("INSERT INTO type_batiment (libelle) VALUES (%s)", (lib,))
+        conn.commit()
+
+        cur.close()
+        conn.close()
+        return redirect("/index")
+
+    except Exception as e:
+        return f"Erreur add_type : {e}"
+
+@app.route("/add_proprietaire", methods=["POST"])
+def add_proprietaire():
+    try:
+        nom = request.form["nom_proprietaire"]
+        type_p = request.form["type_proprietaire"]
+        contact = request.form.get("contact", "")
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("""
+            INSERT INTO proprietaire (nom_proprietaire, type_proprietaire, contact)
+            VALUES (%s, %s, %s)
+        """, (nom, type_p, contact))
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
+        return redirect("/index")
+
+    except Exception as e:
+        return f"Erreur add_proprietaire : {e}"
 
 
 # -------------------- LANCEMENT --------------------

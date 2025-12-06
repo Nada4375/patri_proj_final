@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from db import get_connection
 import queries
 
@@ -12,9 +12,24 @@ DEFAULT_OWNER_ID = 1
 
 
 # -------------------- PAGE 1 : ACCUEIL --------------------
+
+
+# Mot de passe défini
+APP_PASSWORD = "2025"   # 👉 change-le comme tu veux
+
 @app.route("/")
 def first_page():
     return render_template("firstpage.html")
+
+@app.route("/login", methods=["POST"])
+def login():
+    password = request.form.get("password")
+
+    if password == APP_PASSWORD:
+        return redirect(url_for("index"))
+    else:
+        return render_template("firstpage.html", error="Mot de passe incorrect")
+
 
 
 # -------------------- PAGE 2 : INDEX (CARTE + FORMULAIRES) --------------------
@@ -322,6 +337,13 @@ def add_proprietaire():
 
     except Exception as e:
         return f"Erreur add_proprietaire : {e}"
+    
+
+
+
+
+
+
 
 
 # -------------------- LANCEMENT --------------------

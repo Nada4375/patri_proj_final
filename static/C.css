@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    margin-top: 0;
+    padding-top: 0;
     font-family: "Poppins", Arial, sans-serif;
 }
 
@@ -12,18 +12,24 @@ body {
 }
 
 .systemeinfo {
-    width: 90%;
+    width: 736px;
     max-width: 780px;
-    background: rgba(17, 27, 46, 0.9);
+    background: rgba(17, 27, 46, 0.352);
     border-radius: 24px;
-    padding: 32px 28px;
+    padding-top: 0px;
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    margin-left: 680px;
+    margin-left: 600px;
 
     margin-top: 80px;
+
+    backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
 }
+
 
 h1 {
     font-size: 26px;
@@ -46,7 +52,7 @@ p {
 
 .city {
     display: inline-block;
-    padding: 18px 11px;
+    padding-top: 8px;
     border-radius: 999px;
     font-size: 15px;
     font-weight: 600;
@@ -55,6 +61,9 @@ p {
     background: rgba(74, 144, 226, 0.12);
     color: #80b5ff;
     margin-bottom: 16px;
+    margin-top: 15px;
+    height: 32px;
+    width: 400px;
 }
 
 form {
@@ -97,6 +106,19 @@ button {
     margin: 10px auto;
 }
 
+.error-text {
+    color: #ff4e4e;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: block;
+}
+
 button:hover {
     transform: translateY(-2px);
+
+    background: linear-gradient(to right, #668bff, #4a64ff);
+}
+
+footer {
+    color: #374454;
 }

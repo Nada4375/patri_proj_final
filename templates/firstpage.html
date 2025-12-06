@@ -11,13 +11,12 @@
 </head>
 
 <body>
-
     <div class="systemeinfo">
 
         <span class="city">Rabat – Système d'information urbain</span>
 
         <h1>Bienvenue</h1>
-        <h2>Système d'information urbain de Rabat</h2>
+        <h2>Système d'information Urbain</h2>
 
         <p>
             Accédez à l’interface de consultation des données urbaines :
@@ -25,16 +24,20 @@
         </p>
 
         <!-- ROUTE FLASK -->
-        <form action="/index" method="get">
-
-
+        <form action="/login" method="post">
             <div>
                 <label>Mot de passe d’accès</label>
-                <input type="password" placeholder="Entrer le mot de passe">
+                <input type="password" name="password" placeholder="Entrer le mot de passe" required>
+                <!-- 🔥 Message d’erreur juste sous le champ -->
+                {% if error %}
+                <span class="error-text">{{ error }}</span>
+                {% endif %}
             </div>
 
             <button type="submit">Accéder au système</button>
         </form>
+
+
 
         <footer>
             Prototype – Projet Système d'Information cartographique urbain.

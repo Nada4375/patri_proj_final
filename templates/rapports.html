@@ -1,47 +1,73 @@
-<h1>Rapports Patrimoine</h1>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-<form method="get" action="/rapports">
-    <label>Année: </label>
-    <input type="number" name="annee" value="{{ annee }}">
-    <button type="submit">Filtrer</button>
-</form>
+<div class="rapport-container">
 
+    <h1 class="titre-page">Rapports Patrimoine</h1>
 
-<h2>Bâtiments en mauvais état</h2>
-<ul>
-{% for b in mauvais %}
-    <li>{{ b[0] }} - {{ b[1] }} ({{ b[2] }})</li>
-{% endfor %}
-</ul>
+    <!-- ===================== FILTRE ===================== -->
+    <div class="card-rapport">
+        <h2>Bâtiments restaurés en {{ annee }}</h2>
 
-<h2>Nombre d'interventions par entreprise</h2>
-<ul>
-{% for p in interventions %}
-    <li>{{ p[0] }} : {{ p[1] }}</li>
-{% endfor %}
-</ul>
+        <form method="get" action="/rapports" class="form-filtre">
+            <div class="form-group">
+                <label>Année :</label>
+                <input type="number" name="annee" value="{{ annee }}">
+            </div>
 
-<h2>Bâtiments restaurés en {{ annee }}</h2>
-<ul>
-{% for b in restaures %}
-    <li>{{ b[0] }} - {{ b[1] }}</li>
-{% endfor %}
-</ul>
+            <button type="submit" class="btn-primary">Filtrer</button>
+        </form>
 
-<h2>Coût total des restaurations par quartier</h2>
-<ul>
-{% for z in cout_quartier %}
-    <li>{{ z[0] }} : {{ z[1] }}</li>
-{% endfor %}
-</ul>
+        <ul class="list-box">
+            {% for b in restaures %}
+            <li><strong>{{ b[0] }}</strong> — {{ b[1] }}</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-<h2>Prestataires ayant réalisé plus de 3 chantiers</h2>
-<ul>
-{% for p in prestataires %}
-    <li>{{ p[0] }} : {{ p[1] }} chantiers</li>
-{% endfor %}
-</ul>
+    <!-- ===================== MAUVAIS ÉTAT ===================== -->
+    <div class="card-rapport">
+        <h2>Bâtiments en mauvais état</h2>
+        <ul class="list-box">
+            {% for b in mauvais %}
+            <li><strong>{{ b[0] }}</strong> — {{ b[1] }} ({{ b[2] }})</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-<a href="/rapports"><button>Actualiser</button></a>
-<a href="/">Retour à l'accueil</a>
+    <!-- ===================== INTERVENTIONS ===================== -->
+    <div class="card-rapport">
+        <h2>Nombre d'interventions par entreprise</h2>
+        <ul class="list-box">
+            {% for p in interventions %}
+            <li>{{ p[0] }} : <strong>{{ p[1] }}</strong></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- ===================== COUT PAR QUARTIER ===================== -->
+    <div class="card-rapport">
+        <h2>Coût total des restaurations par quartier</h2>
+        <ul class="list-box">
+            {% for z in cout_quartier %}
+            <li>{{ z[0] }} : <strong>{{ z[1] }} DH</strong></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- ===================== PRESTATAIRES ===================== -->
+    <div class="card-rapport">
+        <h2>Prestataires ayant réalisé plus de 3 chantiers</h2>
+        <ul class="list-box">
+            {% for p in prestataires %}
+            <li>{{ p[0] }} : <strong>{{ p[1] }}</strong> chantiers</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- ===================== BOUTONS ===================== -->
+    <div class="btn-row">
+        <a href="/rapports" class="btn-secondary">Actualiser</a>
+        <a href="/index" class="btn-secondary">Retour à l'accueil</a>
+    </div>
+
+</div>

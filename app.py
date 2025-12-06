@@ -340,6 +340,395 @@ def add_proprietaire():
     
 
 
+    ################################################################
+@app.route("/edit_zone/<int:id>", methods=["GET", "POST"])
+def edit_zone(id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        nom = request.form["nom_zone"]
+        cur.execute("UPDATE zone SET nom_zone=%s WHERE Id_zone=%s", (nom, id))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect("/index")
+
+    cur.execute("SELECT nom_zone FROM zone WHERE Id_zone=%s", (id,))
+    zone = cur.fetchone()
+    cur.close()
+    conn.close()
+    return render_template("edit_zone.html", zone=zone, id=id)
+
+##
+@app.route("/edit_type/<int:id>", methods=["GET", "POST"])
+def edit_type(id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        libelle = request.form["libelle"]
+        cur.execute("UPDATE type_batiment SET libelle=%s WHERE Id_type=%s", (libelle, id))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect("/index")
+
+    cur.execute("SELECT libelle FROM type_batiment WHERE Id_type=%s", (id,))
+    data = cur.fetchone()
+    cur.close()
+    conn.close()
+    return render_template("edit_type.html", data=data, id=id)
+##########
+
+
+#####
+@app.route("/edit_proprietaire/<int:id>", methods=["GET", "POST"])
+def edit_proprietaire(id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        nom = request.form["nom"]
+        type_p = request.form["type"]
+        contact = request.form["contact"]
+
+        cur.execute("""
+            UPDATE proprietaire 
+            SET nom_proprietaire=%s, type_proprietaire=%s, contact=%s
+            WHERE Id_proprietaire=%s
+        """, (nom, type_p, contact, id))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect("/index")
+
+    cur.execute("""
+        SELECT nom_proprietaire, type_proprietaire, contact
+        FROM proprietaire WHERE Id_proprietaire=%s
+    """, (id,))
+    data = cur.fetchone()
+    cur.close()
+    conn.close()
+    return render_template("edit_proprietaire.html", data=data, id=id)
+############
+@app.route("/edit_batiment/<int:id>", methods=["GET", "POST"])
+def edit_batiment(id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        nom = request.form["nom"]
+        etat = request.form["etat"]
+
+        cur.execute("""
+            UPDATE batiment
+            SET nom_batiment=%s, niveau_protection=%s
+            WHERE Id_batiment=%s
+        """, (nom, etat, id))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect("/index")
+
+    cur.execute("""
+        SELECT nom_batiment, niveau_protection
+        FROM batiment WHERE Id_batiment=%s
+    """, (id,))
+    data = cur.fetchone()
+    cur.close()
+    conn.close()
+    return render_template("edit_batiment.html", data=data, id=id)
+#########
+@app.route("/edit_prestataire/<int:id>", methods=["GET", "POST"])
+def edit_prestataire(id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        nom = request.form["nom"]
+        type_p = request.form["type"]
+        contact = request.form["contact"]
+
+        cur.execute("""
+            UPDATE prestataire
+            SET nom_prestataire=%s, type_prestataire=%s, contact=%s
+            WHERE Id_prestataire=%s
+        """, (nom, type_p, contact, id))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect("/index")
+
+    cur.execute("""
+        SELECT nom_prestataire, type_prestataire, contact
+        FROM prestataire WHERE Id_prestataire=%s
+    """, (id,))
+    data = cur.fetchone()
+    cur.close()
+    conn.close()
+    return render_template("edit_prestataire.html", data=data, id=id)
+##################
+@app.route("/edit_intervention/<int:id>", methods=["GET", "POST"])
+def edit_intervention(id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        type_t = request.form["type"]
+        cout = request.form["cout"]
+
+        cur.execute("""
+            UPDATE intervention
+            SET type_travaux=%s, cout=%s
+            WHERE Id_intervention=%s
+        """, (type_t, cout, id))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect("/index")
+
+    cur.execute("""
+        SELECT type_travaux, cout
+        FROM intervention WHERE Id_intervention=%s
+    """, (id,))
+    data = cur.fetchone()
+    cur.close()
+    conn.close()
+    return render_template("edit_intervention.html", data=data, id=id)
+#################
+@app.route("/edit_inspection/<int:id>", methods=["GET", "POST"])
+def edit_inspection(id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        rapport = request.form["rapport"]
+        cur.execute("""
+            UPDATE inspection SET rapport=%s
+            WHERE Id_inspection=%s
+        """, (rapport, id))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect("/index")
+
+    cur.execute("""
+        SELECT rapport FROM inspection
+        WHERE Id_inspection=%s
+    """, (id,))
+    data = cur.fetchone()
+    cur.close()
+    conn.close()
+    return render_template("edit_inspection.html", data=data, id=id)
+#######################""
+@app.route("/edit_document/<int:id>", methods=["GET", "POST"])
+def edit_document(id):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        chemin = request.form["chemin"]
+        type_doc = request.form["type"]
+
+        cur.execute("""
+            UPDATE document
+            SET chemin=%s, type_doc=%s
+            WHERE Id_doc=%s
+        """, (chemin, type_doc, id))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect("/index")
+
+    cur.execute("""
+        SELECT chemin, type_doc
+        FROM document WHERE Id_doc=%s
+    """, (id,))
+    data = cur.fetchone()
+    cur.close()
+    conn.close()
+    return render_template("edit_document.html", data=data, id=id)
+#######################
+
+
+@app.route("/update_batiment", methods=["POST"])
+def update_batiment():
+    id = request.form["id_batiment"]
+    nom = request.form["name"]
+    year = request.form["year"]
+    etat = request.form["etat"]
+    lat = request.form["latitude"]
+    lon = request.form["longitude"]
+    adresse = request.form["adresse"]
+    zone = request.form["zone"] or None
+    type_b = request.form["type"] or None
+    prop = request.form["proprietaire"] or None
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE batiment SET
+            nom_batiment=%s,
+            date_construction=%s,
+            niveau_protection=%s,
+            altitude=%s,
+            longitude=%s,
+            adresse_batiment=%s,
+            Id_zone=%s,
+            Id_type=%s,
+            Id_proprietaire=%s
+        WHERE Id_batiment=%s
+    """, (
+        nom, f"{year}-01-01", etat,
+        lat, lon, adresse,
+        zone, type_b, prop,
+        id
+    ))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect("/index")
+
+######################## Fask zone  route de modification 
+@app.route("/update_zone", methods=["POST"])
+def update_zone():
+    id = request.form["id_zone"]
+    nom = request.form["nom_zone"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE zone SET nom_zone=%s WHERE Id_zone=%s",
+        (nom, id)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect("/index")
+
+########################################## Flask route modifier Proprietaire  
+@app.route("/update_proprietaire", methods=["POST"])
+def update_proprietaire():
+    id = request.form["id_proprietaire"]
+    nom = request.form["nom_proprietaire"]
+    type_p = request.form["type_proprietaire"]
+    contact = request.form.get("contact", "")
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE proprietaire
+        SET nom_proprietaire=%s,
+            type_proprietaire=%s,
+            contact=%s
+        WHERE Id_proprietaire=%s
+    """, (nom, type_p, contact, id))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect("/index")
+#########################################################Route flask de modification type batiments 
+@app.route("/update_type", methods=["POST"])
+def update_type():
+    id = request.form["id_type"]
+    libelle = request.form["libelle"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE type_batiment SET libelle=%s WHERE Id_type=%s",
+        (libelle, id)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect("/index")
+#########################################modifier prestatire 
+@app.route("/update_prestataire", methods=["POST"])
+def update_prestataire():
+    id = request.form["id_prestataire"]
+    nom = request.form["nom"]
+    type_p = request.form["type"]
+    contact = request.form.get("contact", "")
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE prestataire
+        SET nom_prestataire=%s,
+            type_prestataire=%s,
+            contact=%s
+        WHERE Id_prestataire=%s
+    """, (nom, type_p, contact, id))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect("/index")
+############################################################# Modifuier intervention 
+@app.route("/update_intervention", methods=["POST"])
+def update_intervention():
+    id = request.form["id_intervention"]
+    bat = request.form["batiment"]
+    pres = request.form["prestataire"]
+    date_t = request.form["date_travaux"]
+    type_t = request.form["type_travaux"]
+    cout = request.form.get("cout") or None
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE intervention
+        SET Id_batiment=%s,
+            Id_prestataire=%s,
+            date_travaux=%s,
+            type_travaux=%s,
+            cout=%s
+        WHERE Id_intervention=%s
+    """, (bat, pres, date_t, type_t, cout, id))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect("/index")
+
+#######################flast route modefier inspection
+@app.route("/update_inspection", methods=["POST"])
+def update_inspection():
+    id = request.form["id_inspection"]
+    bat = request.form["batiment"]
+    date_i = request.form["date_inspection"]
+    rapport = request.form.get("rapport", "")
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        UPDATE inspection
+        SET Id_batiment=%s,
+            date_inspection=%s,
+            rapport=%s
+        WHERE Id_inspection=%s
+    """, (bat, date_i, rapport, id))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect("/index")
+###########################################
+
+
+    
+
+
 
 
 

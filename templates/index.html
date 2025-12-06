@@ -30,14 +30,14 @@
     <div id="map"></div>
     <!-- ========= MENU PRINCIPAL DES SECTIONS ========= -->
     <div class="menu-sections">
-        <button onclick="openSection('zones')">🌍 Zones</button>
-        <button onclick="openSection('proprietaires')">👤 Propriétaires</button>
-        <button onclick="openSection('types')">🏗 Types de Bâtiment</button>
-        <button onclick="openSection('batiments')">🏛 Bâtiments</button>
-        <button onclick="openSection('prestataires')">🧱 Prestataires</button>
-        <button onclick="openSection('interventions')">🛠 Interventions</button>
-        <button onclick="openSection('inspections')">🔍 Inspections</button>
-        <button onclick="openSection('documents')">📄 Documents</button>
+        <button onclick="openSection('zones'); resetZoneForm();"> 🌍 Zones </button>
+        <button onclick="openSection('proprietaires'); resetProprietaireForm();"> 👤 Propriétaires </button>
+        <button onclick="openSection('types'); resetTypeForm();"> 🏗 Types de Bâtiment</button>
+        <button onclick="openSection('batiments'); resetBatimentForm();"> 🏛 Bâtiments </button>
+        <button onclick="openSection('prestataires'); resetPrestataireForm();"> 🧱 Prestataires </button>
+        <button onclick="openSection('interventions'); resetInterventionForm();"> 🛠 Interventions</button>
+        <button onclick="openSection('inspections'); resetInspectionForm();"> 🔍 Inspections</button>
+        <button onclick="openSection('documents'); resetDocumentForm();"> 📄 Documents</button>
         <button onclick="openSection('etat_conservation')">📌 État Conservation</button>
         <button onclick="openSection('rapports')">📊 Rapports</button>
     </div>
@@ -49,22 +49,35 @@
         <h2>Gestion des Zones</h2>
 
         <h3>Ajouter une zone</h3>
-        <form action="/add_zone" method="POST">
-            <label>Nom Zone:</label><input type="text" name="nom_zone" required><br>
-            <button type="submit">Ajouter</button>
+        <form action="/add_zone" method="POST" id="form-zone">
+
+            <input type="hidden" name="id_zone" id="zone_id">
+
+            <label>Nom Zone :</label>
+            <input type="text" name="nom_zone" id="zone_nom" required>
+
+            <button type="submit" id="zone_submit_btn">Ajouter</button>
         </form>
+
 
         <h3>Liste des Zones</h3>
         <table>
             <tr>
                 <th>ID</th>
                 <th>Nom</th>
+                <th>Modefier</th>
             </tr>
+
             {% for z in zones %}
             <tr>
                 <td>{{ z[0] }}</td>
                 <td>{{ z[1] }}</td>
+                <td>
+                    <a href="#" onclick="editZone('{{ z[0] }}','{{ z[1] }}')">✏️</a>
+                </td>
+
             </tr>
+
             {% endfor %}
         </table>
     </section>
@@ -74,22 +87,38 @@
         <h2>Gestion des Types de Bâtiment</h2>
 
         <h3>Ajouter un type</h3>
-        <form action="/add_type" method="POST">
-            <label>Libellé:</label><input type="text" name="libelle" required><br>
-            <button type="submit">Ajouter</button>
+        <form action="/add_type" method="POST" id="form-type">
+
+            <!-- utilisé seulement pour modification -->
+            <input type="hidden" name="id_type" id="type_id">
+
+            <label>Libellé :</label>
+            <input type="text" name="libelle" id="type_libelle" required><br>
+
+            <button type="submit" id="type_submit_btn">Ajouter</button>
         </form>
+
 
         <h3>Liste des Types</h3>
         <table>
             <tr>
                 <th>ID</th>
                 <th>Libellé</th>
+                <th>Modefier</th>
             </tr>
+
             {% for t in types %}
             <tr>
                 <td>{{ t[0] }}</td>
                 <td>{{ t[1] }}</td>
+                <td>
+                    <a href="#" onclick="editType('{{ t[0] }}','{{ t[1] }}')">
+                        ✏️
+                    </a>
+                </td>
+
             </tr>
+
             {% endfor %}
         </table>
     </section>
@@ -99,12 +128,23 @@
         <h2>Gestion des Propriétaires</h2>
 
         <h3>Ajouter un propriétaire</h3>
-        <form action="/add_proprietaire" method="POST">
-            <label>Nom:</label><input type="text" name="nom_proprietaire" required><br>
-            <label>Type:</label><input type="text" name="type_proprietaire" required><br>
-            <label>Contact:</label><input type="text" name="contact"><br>
-            <button type="submit">Ajouter</button>
+        <form action="/add_proprietaire" method="POST" id="form-proprietaire">
+
+            <!-- utilisé seulement pour modification -->
+            <input type="hidden" name="id_proprietaire" id="prop_id">
+
+            <label>Nom :</label>
+            <input type="text" name="nom_proprietaire" id="prop_nom" required><br>
+
+            <label>Type :</label>
+            <input type="text" name="type_proprietaire" id="prop_type" required><br>
+
+            <label>Contact :</label>
+            <input type="text" name="contact" id="prop_contact"><br>
+
+            <button type="submit" id="prop_submit_btn">Ajouter</button>
         </form>
+
 
         <h3>Liste des Propriétaires</h3>
         <table>
@@ -113,14 +153,28 @@
                 <th>Nom</th>
                 <th>Type</th>
                 <th>Contact</th>
+                <th>Modifier</th>
             </tr>
+
             {% for p in proprietaires %}
             <tr>
                 <td>{{ p[0] }}</td>
                 <td>{{ p[1] }}</td>
                 <td>{{ p[2] }}</td>
                 <td>{{ p[3] }}</td>
+                <td>
+                    <a href="#" onclick="editProprietaire(
+                    '{{ p[0] }}',
+                    '{{ p[1] }}',
+                    '{{ p[2] }}',
+                    '{{ p[3] }}'
+                )">
+                        ✏️
+                    </a>
+                </td>
+
             </tr>
+
             {% endfor %}
         </table>
     </section>
@@ -151,44 +205,68 @@
         <h2>Gestion des Bâtiments</h2>
         <div class="form-container">
             <h3>Ajouter un bâtiment</h3>
-            <form action="/add_batiment" method="POST">
-                <label>Nom:</label><input type="text" name="name" required><br>
-                <label>Année:</label><input type="number" name="year" min="1800" max="2100" required><br>
-                <label>État / Protection:</label><input type="text" name="etat" required><br>
-                <label>Latitude:</label><input type="text" name="latitude" required><br>
-                <label>Longitude:</label><input type="text" name="longitude" required><br>
-                <label>Adresse:</label><input type="text" name="adresse" required><br>
-                <label>Zone:</label>
-                <select name="zone">
+            <form action="/add_batiment" method="POST" id="form-batiment">
+
+                <!-- utilisé seulement pour la modification -->
+                <input type="hidden" name="id_batiment" id="id_batiment">
+
+                <label>Nom :</label>
+                <input type="text" name="name" id="bat_nom" required><br>
+
+                <label>Année :</label>
+                <input type="number" name="year" id="bat_year" min="1800" max="2100" required><br>
+
+                <label>État / Protection :</label>
+                <input type="text" name="etat" id="bat_etat" required><br>
+
+                <label>Latitude :</label>
+                <input type="text" name="latitude" id="bat_lat" required><br>
+
+                <label>Longitude :</label>
+                <input type="text" name="longitude" id="bat_lon" required><br>
+
+                <label>Adresse :</label>
+                <input type="text" name="adresse" id="bat_adresse" required><br>
+
+                <!-- ZONE -->
+                <label>Zone :</label>
+                <select name="zone" id="bat_zone">
                     <option value="">Aucune</option>
                     {% for z in zones %}
                     <option value="{{ z[0] }}">{{ z[1] }}</option>
                     {% endfor %}
                 </select><br>
-                <label>Type:</label>
-                <select name="type">
-                    <option value="">Aucune</option>
+
+                <!-- TYPE -->
+                <label>Type :</label>
+                <select name="type" id="bat_type">
+                    <option value="">Aucun</option>
                     {% for t in types %}
                     <option value="{{ t[0] }}">{{ t[1] }}</option>
                     {% endfor %}
                 </select><br>
-                <label>Propriétaire:</label>
-                <select name="proprietaire">
-                    <option value="">Aucune</option>
+
+                <!-- PROPRIÉTAIRE -->
+                <label>Propriétaire :</label>
+                <select name="proprietaire" id="bat_prop">
+                    <option value="">Aucun</option>
                     {% for p in proprietaires %}
                     <option value="{{ p[0] }}">{{ p[1] }}</option>
                     {% endfor %}
                 </select><br>
-                <button type="submit">Ajouter</button>
+
+                <button type="submit" id="bat_submit_btn">Ajouter</button>
+
 
             </form>
+
 
             <h3>Liste des Bâtiments</h3>
             <table>
                 <tr>
                     <th>ID</th>
                     <th>Nom</th>
-                    <th>adresse </th>
+                    <th>adresse</th>
                     <th>Latitude</th>
                     <th>Longitude</th>
                     <th>Année</th>
@@ -196,7 +274,9 @@
                     <th>Zone</th>
                     <th>Type</th>
                     <th>Propriétaire</th>
+                    <th>Modefier</th>
                 </tr>
+
                 {% for b in batiments %}
                 <tr>
                     <td>{{ b[0] }}</td>
@@ -209,10 +289,25 @@
                     <td>{{ b[7] }}</td>
                     <td>{{ b[8] }}</td>
                     <td>{{ b[9] }}</td>
-
-
+                    <td>
+                        <a href="#" onclick="editBatiment(
+                        '{{ b[0] }}',
+                        '{{ b[1] }}',
+                        '{{ b[5] }}',
+                        '{{ b[6] }}',
+                        '{{ b[3] }}',
+                        '{{ b[4] }}',
+                        '{{ b[2] }}',
+                        '{{ b[7] }}',
+                        '{{ b[8] }}',
+                        '{{ b[9] }}'
+                    )">
+                            ✏️
+                        </a>
+                    </td>
 
                 </tr>
+
                 {% endfor %}
             </table>
     </section>
@@ -222,12 +317,23 @@
         <h2>Gestion des Prestataires</h2>
 
         <h3>Ajouter un prestataire</h3>
-        <form action="/add_prestataire" method="POST">
-            <label>Nom:</label><input type="text" name="nom" required><br>
-            <label>Type:</label><input type="text" name="type" required><br>
-            <label>Contact:</label><input type="text" name="contact"><br>
-            <button type="submit">Ajouter</button>
+        <form action="/add_prestataire" method="POST" id="form-prestataire">
+
+            <!-- utilisé seulement pour modification -->
+            <input type="hidden" name="id_prestataire" id="pres_id">
+
+            <label>Nom :</label>
+            <input type="text" name="nom" id="pres_nom" required><br>
+
+            <label>Type :</label>
+            <input type="text" name="type" id="pres_type" required><br>
+
+            <label>Contact :</label>
+            <input type="text" name="contact" id="pres_contact"><br>
+
+            <button type="submit" id="pres_submit_btn">Ajouter</button>
         </form>
+
 
         <h3>Liste des Prestataires</h3>
         <table>
@@ -236,14 +342,28 @@
                 <th>Nom</th>
                 <th>Type</th>
                 <th>Contact</th>
+                <th>Modifier</th>
             </tr>
+
             {% for p in prestataires %}
             <tr>
                 <td>{{ p[0] }}</td>
                 <td>{{ p[1] }}</td>
                 <td>{{ p[2] }}</td>
                 <td>{{ p[3] }}</td>
+                <td>
+                    <a href="#" onclick="editPrestataire(
+                    '{{ p[0] }}',
+                    '{{ p[1] }}',
+                    '{{ p[2] }}',
+                    '{{ p[3] }}'
+                )">
+                        ✏️
+                    </a>
+                </td>
+
             </tr>
+
             {% endfor %}
         </table>
     </section>
@@ -253,27 +373,37 @@
         <h2>Gestion des Interventions</h2>
 
         <h3>Ajouter une intervention</h3>
-        <form action="/add_intervention" method="POST">
-            <label>Bâtiment:</label>
-            <select name="batiment">
+        <form action="/add_intervention" method="POST" id="form-intervention">
+
+            <!-- utilisé seulement pour modification -->
+            <input type="hidden" name="id_intervention" id="interv_id">
+
+            <label>Bâtiment :</label>
+            <select name="batiment" id="interv_batiment" required>
                 {% for b in batiments %}
                 <option value="{{ b[0] }}">{{ b[1] }}</option>
                 {% endfor %}
             </select><br>
 
-            <label>Prestataire:</label>
-            <select name="prestataire">
+            <label>Prestataire :</label>
+            <select name="prestataire" id="interv_prestataire" required>
                 {% for p in prestataires %}
                 <option value="{{ p[0] }}">{{ p[1] }}</option>
                 {% endfor %}
             </select><br>
 
-            <label>Date:</label><input type="date" name="date_travaux" required><br>
-            <label>Type travaux:</label><input type="text" name="type_travaux" required><br>
-            <label>Coût:</label><input type="number" step="0.01" name="cout"><br>
+            <label>Date travaux :</label>
+            <input type="date" name="date_travaux" id="interv_date" required><br>
 
-            <button type="submit">Ajouter</button>
+            <label>Type travaux :</label>
+            <input type="text" name="type_travaux" id="interv_type" required><br>
+
+            <label>Coût :</label>
+            <input type="number" step="0.01" name="cout" id="interv_cout"><br>
+
+            <button type="submit" id="interv_submit_btn">Ajouter</button>
         </form>
+
 
         <h3>Liste des Interventions</h3>
         <table>
@@ -284,7 +414,9 @@
                 <th>Date</th>
                 <th>Type</th>
                 <th>Coût</th>
+                <th>Modefier</th>
             </tr>
+
             {% for i in interventions %}
             <tr>
                 <td>{{ i[0] }}</td>
@@ -293,7 +425,21 @@
                 <td>{{ i[3] }}</td>
                 <td>{{ i[4] }}</td>
                 <td>{{ i[5] }}</td>
+                <td>
+                    <a href="#" onclick="editIntervention(
+                    '{{ i[0] }}',
+                    '{{ i[1] }}',
+                    '{{ i[2] }}',
+                    '{{ i[3] }}',
+                    '{{ i[4] }}',
+                    '{{ i[5] }}'
+                )">
+                        ✏️
+                    </a>
+                </td>
+
             </tr>
+
             {% endfor %}
         </table>
     </section>
@@ -303,19 +449,27 @@
         <h2>Gestion des Inspections</h2>
 
         <h3>Ajouter une inspection</h3>
-        <form action="/add_inspection" method="POST">
-            <label>Bâtiment:</label>
-            <select name="batiment">
+        <form action="/add_inspection" method="POST" id="form-inspection">
+
+            <!-- utilisé seulement pour modification -->
+            <input type="hidden" name="id_inspection" id="insp_id">
+
+            <label>Bâtiment :</label>
+            <select name="batiment" id="insp_batiment" required>
                 {% for b in batiments %}
                 <option value="{{ b[0] }}">{{ b[1] }}</option>
                 {% endfor %}
             </select><br>
 
-            <label>Date:</label><input type="date" name="date_inspection" required><br>
-            <label>Rapport:</label><textarea name="rapport"></textarea><br>
+            <label>Date inspection :</label>
+            <input type="date" name="date_inspection" id="insp_date" required><br>
 
-            <button type="submit">Ajouter</button>
+            <label>Rapport :</label>
+            <textarea name="rapport" id="insp_rapport"></textarea><br>
+
+            <button type="submit" id="insp_submit_btn">Ajouter</button>
         </form>
+
 
         <h3>Liste des Inspections</h3>
         <table>
@@ -324,14 +478,28 @@
                 <th>Bâtiment</th>
                 <th>Date</th>
                 <th>Rapport</th>
+                <th>Modifier</th>
             </tr>
+
             {% for ins in inspections %}
             <tr>
                 <td>{{ ins[0] }}</td>
                 <td>{{ ins[1] }}</td>
                 <td>{{ ins[2] }}</td>
                 <td>{{ ins[3] }}</td>
+                <td>
+                    <a href="#" onclick="editInspection(
+                    '{{ ins[0] }}',
+                    '{{ ins[1] }}',
+                    '{{ ins[2] }}',
+                    '{{ ins[3] }}'
+                )">
+                        ✏️
+                    </a>
+                </td>
+
             </tr>
+
             {% endfor %}
         </table>
     </section>
@@ -341,19 +509,27 @@
         <h2>Gestion des Documents</h2>
 
         <h3>Ajouter un document</h3>
-        <form action="/add_document" method="POST">
-            <label>Bâtiment:</label>
-            <select name="batiment">
+        <form action="/add_document" method="POST" id="form-document">
+
+            <!-- utilisé seulement pour modification -->
+            <input type="hidden" name="id_doc" id="doc_id">
+
+            <label>Bâtiment :</label>
+            <select name="batiment" id="doc_batiment" required>
                 {% for b in batiments %}
                 <option value="{{ b[0] }}">{{ b[1] }}</option>
                 {% endfor %}
             </select><br>
 
-            <label>Chemin / Nom fichier:</label><input type="text" name="chemin" required><br>
-            <label>Type document:</label><input type="text" name="type_doc"><br>
+            <label>Chemin / Nom fichier :</label>
+            <input type="text" name="chemin" id="doc_chemin" required><br>
 
-            <button type="submit">Ajouter</button>
+            <label>Type document :</label>
+            <input type="text" name="type_doc" id="doc_type"><br>
+
+            <button type="submit" id="doc_submit_btn">Ajouter</button>
         </form>
+
 
         <h3>Liste des Documents</h3>
         <table>
@@ -362,14 +538,28 @@
                 <th>Bâtiment</th>
                 <th>Chemin</th>
                 <th>Type</th>
+                <th>Modefier</th>
             </tr>
+
             {% for d in documents %}
             <tr>
                 <td>{{ d[0] }}</td>
                 <td>{{ d[1] }}</td>
                 <td>{{ d[2] }}</td>
                 <td>{{ d[3] }}</td>
+                <td>
+                    <a href="#" onclick="editDocument(
+                    '{{ d[0] }}',
+                    '{{ d[1] }}',
+                    '{{ d[2] }}',
+                    '{{ d[3] }}'
+                )">
+                        ✏️
+                    </a>
+                </td>
+
             </tr>
+
             {% endfor %}
         </table>
     </section>
@@ -530,7 +720,282 @@
             jardins.addTo(map);
         }
 
+
+        // ===============================
+        // GESTION AFFICHAGE DES SECTIONS
+        // ===============================
+
+        function openSection(sectionId) {
+            // masquer toutes les sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // afficher la section demandée
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.style.display = 'block';
+            }
+        }
+
+        // section affichée par défaut au chargement
+        document.addEventListener("DOMContentLoaded", function () {
+            openSection('zones'); // ✅ change si tu veux une autre section au départ
+        });
+
     </script>
+    <script>
+        function editBatiment(
+            id, nom, year, etat,
+            lat, lon, adresse,
+            zone, type, prop
+        ) {
+            // afficher la section bâtiments
+            openSection('batiments');
+
+            // changer action du formulaire
+            const form = document.getElementById("form-batiment");
+            form.action = "/update_batiment";
+
+            // remplir les champs
+            document.getElementById("id_batiment").value = id;
+            document.getElementById("bat_nom").value = nom;
+            document.getElementById("bat_year").value = year;
+            document.getElementById("bat_etat").value = etat;
+            document.getElementById("bat_lat").value = lat;
+            document.getElementById("bat_lon").value = lon;
+            document.getElementById("bat_adresse").value = adresse;
+            document.getElementById("bat_zone").value = zone;
+            document.getElementById("bat_type").value = type;
+            document.getElementById("bat_prop").value = prop;
+            // passer en mode modification
+            document.getElementById("bat_submit_btn").innerText = "Modifier";
+
+        }
+        // passer en mode modification
+
+        function resetBatimentForm() {
+            const form = document.getElementById("form-batiment");
+            form.reset();
+            form.action = "/add_batiment";
+
+            document.getElementById("id_batiment").value = "";
+            document.getElementById("bat_submit_btn").innerText = "Ajouter";
+        }
+
+    </script>
+
+    <script>
+        function editZone(id, nom) {
+            openSection('zones');
+
+            document.getElementById("form-zone").action = "/update_zone";
+            document.getElementById("zone_id").value = id;
+            document.getElementById("zone_nom").value = nom;
+            document.getElementById("zone_submit_btn").innerText = "Modifier";
+        }
+
+        function resetZoneForm() {
+            document.getElementById("form-zone").reset();
+            document.getElementById("form-zone").action = "/add_zone";
+            document.getElementById("zone_submit_btn").innerText = "Ajouter";
+        }
+    </script>
+
+
+
+    <script>
+        function editProprietaire(id, nom, type, contact) {
+            openSection('proprietaires');
+
+            const form = document.getElementById("form-proprietaire");
+            form.action = "/update_proprietaire";
+
+            document.getElementById("prop_id").value = id;
+            document.getElementById("prop_nom").value = nom;
+            document.getElementById("prop_type").value = type;
+            document.getElementById("prop_contact").value = contact || "";
+
+            document.getElementById("prop_submit_btn").innerText = "Modifier";
+        }
+
+        function resetProprietaireForm() {
+            const form = document.getElementById("form-proprietaire");
+            form.reset();
+            form.action = "/add_proprietaire";
+
+            document.getElementById("prop_id").value = "";
+            document.getElementById("prop_submit_btn").innerText = "Ajouter";
+        }
+    </script>
+
+    <script>
+        function editType(id, libelle) {
+            openSection('types');
+
+            const form = document.getElementById("form-type");
+            form.action = "/update_type";
+
+            document.getElementById("type_id").value = id;
+            document.getElementById("type_libelle").value = libelle;
+
+            document.getElementById("type_submit_btn").innerText = "Modifier";
+        }
+
+        function resetTypeForm() {
+            const form = document.getElementById("form-type");
+            form.reset();
+            form.action = "/add_type";
+
+            document.getElementById("type_id").value = "";
+            document.getElementById("type_submit_btn").innerText = "Ajouter";
+        }
+    </script>
+
+    <script>
+        function editPrestataire(id, nom, type, contact) {
+            openSection('prestataires');
+
+            const form = document.getElementById("form-prestataire");
+            form.action = "/update_prestataire";
+
+            document.getElementById("pres_id").value = id;
+            document.getElementById("pres_nom").value = nom;
+            document.getElementById("pres_type").value = type;
+            document.getElementById("pres_contact").value = contact || "";
+
+            document.getElementById("pres_submit_btn").innerText = "Modifier";
+        }
+
+        function resetPrestataireForm() {
+            const form = document.getElementById("form-prestataire");
+            form.reset();
+            form.action = "/add_prestataire";
+
+            document.getElementById("pres_id").value = "";
+            document.getElementById("pres_submit_btn").innerText = "Ajouter";
+        }
+    </script>
+
+
+    <script>
+        function editIntervention(id, batimentNom, prestataireNom, date, typeTravaux, cout) {
+            openSection('interventions');
+
+            const form = document.getElementById("form-intervention");
+            form.action = "/update_intervention";
+
+            // remplir champs simples
+            document.getElementById("interv_id").value = id;
+            document.getElementById("interv_date").value = date;
+            document.getElementById("interv_type").value = typeTravaux;
+            document.getElementById("interv_cout").value = cout || "";
+
+            // sélectionner bâtiment par nom
+            const batSelect = document.getElementById("interv_batiment");
+            for (let opt of batSelect.options) {
+                if (opt.text === batimentNom) {
+                    opt.selected = true;
+                    break;
+                }
+            }
+
+            // sélectionner prestataire par nom
+            const presSelect = document.getElementById("interv_prestataire");
+            for (let opt of presSelect.options) {
+                if (opt.text === prestataireNom) {
+                    opt.selected = true;
+                    break;
+                }
+            }
+
+            // bouton en mode modification
+            document.getElementById("interv_submit_btn").innerText = "Modifier";
+        }
+
+        function resetInterventionForm() {
+            const form = document.getElementById("form-intervention");
+            form.reset();
+            form.action = "/add_intervention";
+
+            document.getElementById("interv_id").value = "";
+            document.getElementById("interv_submit_btn").innerText = "Ajouter";
+        }
+    </script>
+
+    <script>
+        function editInspection(id, batimentNom, date, rapport) {
+            openSection('inspections');
+
+            const form = document.getElementById("form-inspection");
+            form.action = "/update_inspection";
+
+            document.getElementById("insp_id").value = id;
+            document.getElementById("insp_date").value = date;
+            document.getElementById("insp_rapport").value = rapport || "";
+
+            // sélectionner bâtiment par nom
+            const batSelect = document.getElementById("insp_batiment");
+            for (let opt of batSelect.options) {
+                if (opt.text === batimentNom) {
+                    opt.selected = true;
+                    break;
+                }
+            }
+
+            document.getElementById("insp_submit_btn").innerText = "Modifier";
+        }
+
+        function resetInspectionForm() {
+            const form = document.getElementById("form-inspection");
+            form.reset();
+            form.action = "/add_inspection";
+
+            document.getElementById("insp_id").value = "";
+            document.getElementById("insp_submit_btn").innerText = "Ajouter";
+        }
+    </script>
+
+    <script>
+        function editDocument(id, batimentNom, chemin, typeDoc) {
+            openSection('documents');
+
+            const form = document.getElementById("form-document");
+            form.action = "/update_document";
+
+            document.getElementById("doc_id").value = id;
+            document.getElementById("doc_chemin").value = chemin;
+            document.getElementById("doc_type").value = typeDoc || "";
+
+            // sélectionner bâtiment par nom
+            const batSelect = document.getElementById("doc_batiment");
+            for (let opt of batSelect.options) {
+                if (opt.text === batimentNom) {
+                    opt.selected = true;
+                    break;
+                }
+            }
+
+            document.getElementById("doc_submit_btn").innerText = "Modifier";
+        }
+
+        function resetDocumentForm() {
+            const form = document.getElementById("form-document");
+            form.reset();
+            form.action = "/add_document";
+
+            document.getElementById("doc_id").value = "";
+            document.getElementById("doc_submit_btn").innerText = "Ajouter";
+        }
+    </script>
+
+
+
+
+
+
+
+
 
 </body>
 

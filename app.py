@@ -1,8 +1,22 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from db import get_connection
+from charts import plot_evolution_restaurations
 import queries
+from queries import (
+    batiments_mauvais_etat,
+    interventions_par_entreprise,
+    batiments_restaures_annee,
+    cout_total_par_quartier,
+    prestataires_plus_de_3_chantiers,
+    evolution_restaurations_par_annee
+)
+
+
 
 app = Flask(__name__)
+
+app.secret_key = "supersecretkey123"    # obligatoire
+
 
 
 # Default IDs in case none selected
@@ -11,6 +25,7 @@ DEFAULT_TYPE_ID = 1
 DEFAULT_OWNER_ID = 1
 
 
+##################
 # -------------------- PAGE 1 : ACCUEIL --------------------
 
 
@@ -18,7 +33,7 @@ DEFAULT_OWNER_ID = 1
 APP_PASSWORD = "2025"   # 👉 change-le comme tu veux
 
 @app.route("/")
-def first_page():
+def firstpage():
     return render_template("firstpage.html")
 
 @app.route("/login", methods=["POST"])
@@ -258,23 +273,6 @@ def add_document():
 
 
 # -------------------- PAGE RAPPORTS --------------------
-@app.route("/rapports")
-def rapports():
-    mauvais = queries.batiments_mauvais_etat()
-    interventions = queries.interventions_par_entreprise()
-    annee = request.args.get("annee", 2025)
-    restaures = queries.batiments_restaures_annee(annee)
-    cout_quartier = queries.cout_total_par_quartier()
-    prestataires = queries.prestataires_plus_de_3_chantiers()
-
-    return render_template("rapports.html",
-                           mauvais=mauvais,
-                           interventions=interventions,
-                           annee=annee,
-                           restaures=restaures,
-                           cout_quartier=cout_quartier,
-                           prestataires=prestataires)
-
 
 
 @app.route("/add_zone", methods=["POST"])
@@ -725,8 +723,128 @@ def update_inspection():
     return redirect("/index")
 ###########################################
 
+app.secret_key = "2025"  # nécessaire pour session
 
-    
+@app.route("/logout")
+def logout():
+    session.clear()               # Vide la session utilisateur
+    return redirect(url_for("firstpage"))   # Redirection vers index.html
+
+ ###################suppression zones 
+@app.route("/delete_zone/<int:id>")
+def delete_zone(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM zone WHERE Id_zone=%s", (id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect("/index")
+############################delet type 
+@app.route("/delete_type/<int:id>")
+def delete_type(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM type_batiment WHERE Id_type=%s", (id,))
+    conn.commit()
+    conn.close()
+    return redirect("/index")
+################################delet prop 
+@app.route("/delete_proprietaire/<int:id>")
+def delete_proprietaire(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM proprietaire WHERE Id_proprietaire=%s", (id,))
+    conn.commit()
+    conn.close()
+    return redirect("/index")
+##################delet batiment 
+@app.route("/delete_batiment/<int:id>")
+def delete_batiment(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM batiment WHERE Id_batiment=%s", (id,))
+    conn.commit()
+    conn.close()
+    return redirect("/index")
+#######################delet presta 
+@app.route("/delete_prestataire/<int:id>")
+def delete_prestataire(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM prestataire WHERE Id_prestataire=%s", (id,))
+    conn.commit()
+    conn.close()
+    return redirect("/index")
+##########"delet intervention 
+@app.route("/delete_intervention/<int:id>")
+def delete_intervention(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM intervention WHERE Id_intervention=%s", (id,))
+    conn.commit()
+    conn.close()
+    return redirect("/index")
+##########delet
+@app.route("/delete_inspection/<int:id>")
+def delete_inspection(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM inspection WHERE Id_inspection=%s", (id,))
+    conn.commit()
+    conn.close()
+    return redirect("/index")
+##########""delet doc
+@app.route("/delete_document/<int:id>")
+def delete_document(id):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM document WHERE Id_doc=%s", (id,))
+    conn.commit()
+    conn.close()
+    return redirect("/index")
+
+
+
+
+@app.route("/maintenance")
+def maintenance():
+    return render_template("maintenance.html")
+
+@app.route("/support")
+def support():
+    return render_template("support.html")
+
+   
+##graphe
+@app.route("/rapports")
+def rapports():
+    annee = request.args.get("annee", 2025, type=int)
+
+    restaures = batiments_restaures_annee(annee)
+    mauvais = batiments_mauvais_etat()
+    interventions = interventions_par_entreprise()
+    cout_quartier = cout_total_par_quartier()
+    prestataires = prestataires_plus_de_3_chantiers()
+
+    evolution = evolution_restaurations_par_annee()
+    labels = [str(row[0]) for row in evolution]
+
+    valeurs = [row[1] for row in evolution]
+
+    graph_image = plot_evolution_restaurations(labels, valeurs)
+
+    return render_template(
+        "rapports.html",
+        annee=annee,
+        restaures=restaures,
+        mauvais=mauvais,
+        interventions=interventions,
+        cout_quartier=cout_quartier,
+        prestataires=prestataires,
+        graph_image=graph_image
+    )
+
 
 
 
@@ -738,3 +856,7 @@ def update_inspection():
 # -------------------- LANCEMENT --------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
+######

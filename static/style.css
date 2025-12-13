@@ -1,490 +1,641 @@
-/* =======================================================================
-   🎨 MODE SOMBRE PREMIUM – Tableau de Bord SIG Rabat
-   Style cohérent avec l’accueil (bleu nuit, cyan, blanc)
-======================================================================= */
+/* ============================================================
+   GLOBAL RESET + FONTS
+============================================================ */
 
-/* ---------------- GLOBAL ---------------- */
-body {
-    font-family: "Poppins", "Segoe UI", sans-serif;
-    background: #0a1525;
+
+
+:root {
+    /* Backgrounds */
+    --bg-main: #0b1220;
+    --bg-card: #101a33;
+    --bg-card-glass: rgba(16, 26, 51, 0.75);
+
+    /* Primary neon colors */
+    --blue-neon: #3b82f6;
+    --cyan-neon: #22d3ee;
+    --purple-neon: #8b5cf6;
+    --pink-neon: #101a33;
+    --orange-neon: #fb7185;
+
+    /* Text */
+    --text-main: #e5edff;
+    --text-muted: #94a3b8;
+
+    /* Borders & glow */
+    --border-soft: rgba(255, 255, 255, 0.08);
+    --glow-blue: 0 0 20px rgba(59, 130, 246, 0.45);
+}
+
+* {
     margin: 0;
     padding: 0;
-    color: #000000;
+    box-sizing: border-box;
 }
 
-/* ---------------- HEADER ---------------- */
+body {
+    font-family: "Poppins", sans-serif;
+    background: #0b0e1a;
+    ;
+    color: #e3edff;
+    overflow-x: hidden;
+}
+
+
+/* ============================================================
+   HEADER — FLUID & CLEAN
+============================================================ */
 header {
     text-align: center;
-    padding: 30px 20px;
-    background: linear-gradient(135deg, #061121, #0c1f3a);
+    padding: 35px 25px;
+
     color: #dfe9f7;
-    box-shadow: 0 3px 10px rgba(4, 89, 194, 0.45);
+
     border-bottom-left-radius: 22px;
     border-bottom-right-radius: 22px;
+    margin-left: 10px;
+    position: relative;
 }
 
-#ci {
-    display: inline-block;
-    padding: 6px 18px;
-    border-radius: 50px;
-    background: rgba(10, 133, 240, 0.15);
-    color: #9ac7ff;
-    font-weight: 600;
+#contenu-principale {
+    background-color: #0b1e35c6;
+    width: 1500px;
+    height: 4300px;
+    margin-left: -5px;
+    margin-right: 600px;
+    padding-left: 30px;
+    border-radius: 10px;
 }
 
 header h1 {
-    font-size: 34px;
-    margin: 5px 0;
-    background: linear-gradient(90deg, #4a90e2, #7fb4ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-header p {
-    margin: 0;
-    font-size: 15px;
-    opacity: 0.80;
-}
-
-/* ---------------- MAP ---------------- */
-#map {
-    height: 600px;
-    width: 93%;
-    margin: 25px auto;
-    border-radius: 18px;
-    border: 2px solid #12345a;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-}
-
-/* ---------------- BOUTONS CARTE ---------------- */
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.controls .btn {
-    padding: 12px 22px;
-    font-size: 16px;
-    border-radius: 45px;
-    background: linear-gradient(135deg, #0e1c33, #123a6f);
-    color: #e5edff;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-    transition: 0.3s;
-}
-
-.controls .btn:hover {
-    background: #4a90e2;
-    transform: translateY(-3px);
-}
-
-/* ---------------- MENU SECTIONS ---------------- */
-.menu-sections {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    padding: 20px 0;
-}
-
-.menu-sections button {
-    padding: 12px 24px;
-    border-radius: 50px;
-    background: #1b3053;
-    color: #dfe9f7;
-    font-weight: 600;
-    border: none;
-    font-size: 15px;
-    cursor: pointer;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
-    transition: 0.25s;
-}
-
-.menu-sections button:hover,
-.menu-sections button.active {
-    background: #4a90e2;
-    border-color: #4a90e2;
-    transform: translateY(-3px);
-}
-
-/* ---------------- SECTIONS ---------------- */
-.content-section {
-    display: none;
-    width: 92%;
-    margin: 30px auto;
-    background: #102032;
-    border-radius: 18px;
-    padding: 25px;
-    border-left: 6px solid #2a6ad6;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
-}
-
-.content-section h2 {
-    font-size: 26px;
-    color: #aed4ff;
-}
-
-h3 {
-    font-size: 20px;
-    color: #79a8ff;
-    font-weight: 600;
-}
-
-/* =================== TABLEAU – SOMBRE CLAIR & LISIBLITÉ MAX =================== */
-
-table {
-    width: 100%;
-    margin-top: 20px;
-    border-radius: 14px;
-    background: #132237;
-    /* bleu sombre mais clair */
-    border: 1px solid #2b405b;
-    overflow: hidden;
-    font-size: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
-}
-
-/* ---- En-tête : bleu clair lisible ---- */
-table th {
-    background: #1f3c63;
-    /* plus clair que ton bleu actuel */
-    color: #eaf3ff;
-    font-weight: 600;
-    padding: 14px;
-    border-bottom: 1px solid #304f75;
-    text-align: left;
-}
-
-/* ---- Cellules lisibles ---- */
-table td {
-    padding: 12px 15px;
-    color: #f4f7ff;
-    background: #162a45;
-    /* un peu plus clair que avant */
-    border-bottom: 1px solid #244062;
-}
-
-/* ---- Alternance légère et propre ---- */
-table tr:nth-child(even) td {
-    background: #1a304f;
-    /* un peu plus clair pour alterner */
-}
-
-/* ---- Hover bleu doux ---- */
-table tr:hover td {
-    background: #234a77;
-    transition: 0.25s;
-}
-
-/* ---- Première colonne mise en valeur ---- */
-table td:first-child {
+    font-size: 32px;
     font-weight: 700;
-    color: #b6d4ff;
-    /* bleu clair doux */
+    letter-spacing: 1px;
+    text-shadow: 0 0 12px rgba(0, 132, 255, 0.4);
 }
 
-/* ---------------- FORMULAIRES ---------------- */
+#ci {
+    font-size: 14px;
+    opacity: 0.85;
+    letter-spacing: 0.5px;
+}
 
 
-/* btn */
-form button {
-    padding: 12px 22px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #4a90e2, #0b1a33);
-    color: white;
-    border: none;
-    font-weight: 600;
+/* ============================================================
+   SIDEBAR — VERSION PREMIUM PRO
+============================================================ */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+
+    width: 95px;
+    /* par défaut FERMÉE */
+    background: #0b0e1a;
+
+    padding-top: 25px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+
+    box-shadow: 0x 0 0px rgba(0, 132, 255, 0.18);
+
+    transition: width 0.35s ease, background 0.3s ease;
+    z-index: 1200;
+}
+
+/* Quand sidebar est OUVERTE */
+.sidebar.open {
+    width: 260px;
+    background: #071a30;
+}
+
+
+/* ------------------------------------------------------------
+   ITEMS DE LA SIDEBAR
+------------------------------------------------------------ */
+.sidebar .item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    padding: 12px 18px;
+    margin: 10px 12px;
+
+    border-radius: 12px;
     cursor: pointer;
-    width: 240px;
-    transition: 0.3s;
-    display: block;
-    margin: 22px auto 0 auto;
+
+    color: #cfe2ff;
+    font-size: 16px;
+
+    transition: all 0.25s ease;
+    white-space: nowrap;
 }
 
-form button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+/* Icône */
+.sidebar .item i {
+    font-size: 20px;
+    color: #9bbcff;
+    transition: 0.25s ease;
 }
 
-/* =========================================================
-   🔵 PARTIE CLAIRE – UNIQUEMENT POUR LES SECTIONS
-   (Gestion des Zones, Propriétaires, Types, etc.)
-   ========================================================= */
-
-/* ---- SECTION ---- */
-.content-section {
-    display: none;
-    width: 92%;
-    margin: 30px auto;
-    background: #152339de;
-    /* fond blanc propre */
-    border-radius: 16px;
-    padding: 30px;
-    border-left: 6px solid #4a90e2;
-    /* bleu moderne */
+/* Hover */
+.sidebar .item:hover {
+    background: rgba(0, 132, 255, 0.15);
+    transform: translateX(8px);
+    box-shadow: 0 0 12px rgba(0, 132, 255, 0.45);
 }
 
-.content-section h2 {
-    font-size: 26px;
-    color: #b5c0d2;
-    /* bleu foncé lisible */
+.sidebar .item:hover i {
+    color: #52aaff;
 }
 
-/* ---- FORMULAIRE (clair) ---- */
-form {
-    background: #1b2d4d;
-    padding: 25px;
-    border-radius: 14px;
-    margin: 15px auto 35px auto;
-    width: 1000px;
-    max-width: 1000px;
-    border: none;
-    color: #ffffff;
-}
+/* Ligne active */
+.sidebar .item.active {
+    background: rgba(0, 132, 255, 0.25);
+    padding-left: 15px;
+    border-left: 4px solid #4da3ff;
 
-form label {
-    color: #d0d2dd;
+    color: #4da3ff;
     font-weight: 600;
-    margin-bottom: 6px;
+}
+
+.sidebar .item.active i {
+    color: #4da3ff;
+}
+
+/* Texte caché quand sidebar fermée */
+.sidebar:not(.open) .item span {
+    opacity: 0;
+    width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    transition: all 0.25s ease;
+}
+
+/* Texte visible quand ouverte */
+.sidebar.open .item span {
+    opacity: 1;
+    width: auto;
+    margin-left: 10px;
+}
+
+
+
+/* ============================================================
+   OVERLAY (pour mobile ou sidebar ouverte)
+============================================================ */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: 0.3s;
+    z-index: 800;
+}
+
+.overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+
+/* ============================================================
+   PAGE CONTENT
+============================================================ */
+#page-content {
+    margin-left: 100px;
+    padding: 25px;
+    transition: filter 0.3s ease;
+}
+
+#page-content.blur {
+    filter: blur(5px);
+}
+
+
+/* ============================================================
+   CARTE LEAFLET — STYLE PREMIUM
+============================================================ */
+#map {
+    height: 460px;
+    width: 1130px;
+
+    border-radius: 18px;
+    margin-top: 25px;
+    margin-left: 20px;
+
+    border: 1px solid rgba(0, 132, 255, 0.35);
+    box-shadow: 0 0 30px rgba(0, 132, 255, 0.25);
+}
+
+.group-card {
+    background: #0b0e1a;
+    padding: 35px !important;
+    /* 🎯 le padding fonctionne ENFIN */
+    border-radius: 18px;
+    border: 1px solid rgba(0, 132, 255, 0.15);
+
+    backdrop-filter: blur(6px);
+    margin-right: 41px;
+}
+
+/* ============================================================
+   FILTRES NÉON
+============================================================ */
+.map-filter-group {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    margin-right: 260px;
+    margin-bottom: 20px;
+    padding-top: 50px;
+}
+
+.filter-item {
+    text-align: center;
+    cursor: pointer;
+    color: #d9e8ff;
+}
+
+.filter-item {
+    margin-top: 20px;
+    /* espace général */
+}
+
+.filter-item label {
+    margin-top: 28px;
+    /* décale le texte sous le cercle */
+}
+
+.filter-item span.label-text {
+    margin-top: 28px;
+    display: block;
+}
+
+.filter-item input {
+    display: none;
+}
+
+.circle {
+    width: 65px;
+    height: 65px;
+
+    background: linear-gradient(145deg, #0d1b2e, #132143);
+    border-radius: 50%;
+    border: 1px solid rgba(0, 132, 255, 0.45);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+    box-shadow: 0 0 10px rgba(0, 132, 255, 0.3);
+    transition: 0.25s ease;
+}
+
+.circle:hover {
+    transform: scale(1.12);
+    background: rgba(0, 132, 255, 0.25);
+    box-shadow: 0 0 10px rgba(5, 52, 96, 0.75);
+}
+
+.circle span {
+    color: #4da3ff;
+    font-size: 30px;
+}
+
+/* Sélectionné */
+.filter-item input:checked+.circle {
+    background: linear-gradient(145deg, #0b3a80, #1f78ff);
+    border-color: white;
+    transform: scale(1.18);
+    box-shadow: 0 0 15px rgba(12, 42, 94, 0.767);
+}
+
+
+/* ============================================================
+   SECTIONS (FORMULAIRES & TABLEAUX)
+============================================================ */
+.content-section {
+    background: #0b0e1a;
+    padding: 35px;
+    border-radius: 22px;
+    margin: 35px auto;
+    margin-right: 250px;
+    width: 83%;
+    border: 1px solid rgba(0, 132, 255, 0.12);
+
+}
+
+
+/* ============================================================
+   FORM INPUTS
+============================================================ */
+form label {
+    font-weight: 600;
+    margin-top: 10px;
     display: block;
 }
 
 form input,
 form select,
 form textarea {
-    width: 950px;
-    padding: 12px 14px;
-    background: #f6f8fc;
-    border-radius: 10px;
-    border: 1px solid #cbd6e4;
-    color: #000000;
-    margin-bottom: 16px;
+    width: 50%;
+    padding: 12px;
+    border-radius: 12px;
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: #3a4b71aa;
+    border: 1px solid rgba(0, 132, 255, 0.25);
+    color: white;
+
+    transition: 0.25s;
 }
 
 form input:focus,
 form select:focus,
 form textarea:focus {
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
     outline: none;
+    box-shadow: 0 0 08px rgba(0, 132, 255, 0.45);
 }
 
-/* ---- BOUTON ---- */
-form button {
+
+/* ============================================================
+    BUTTONS NÉON
+============================================================ */
+button {
+    background: linear-gradient(135deg, #0d6efd, #1a7cff);
     padding: 12px 22px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #4a90e2, #1c3d72);
-    color: white;
+    border-radius: 14px;
     border: none;
+
+    color: white;
+    font-size: 15px;
     font-weight: 600;
+
+    margin-top: 25px;
+    margin-bottom: 20px;
     cursor: pointer;
-    width: 220px;
-    display: block;
-    margin: 20px auto 0 auto;
-    transition: 0.3s;
+
+    transition: 0.25s;
+    box-shadow: 0 0 15px rgba(26, 124, 255, 0.4);
 }
 
-form button:hover {
+button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.20);
 }
 
-/* ===== TABLEAU MODERNE SANS BORDURES ===== */
 
+/* ============================================================
+   TABLEAUX — STYLE MODERNE
+============================================================ */
 table {
     width: 100%;
-    margin-top: 15px;
-    border-radius: 14px;
-    background: #b5b7c0d2;
-    border: none !important;
-    /* supprime toutes les bordures */
     border-collapse: collapse;
-    overflow: hidden;
+    color: #e9f0ff;
+    margin-top: 25px;
     font-size: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    /* ombre douce pro */
 }
 
-/* En-tête */
 table th {
-    background: #1b2d4d;
-    /* bleu foncé élégant */
-    color: #ffffff;
-    font-weight: 600;
+    background: rgba(0, 132, 255, 0.15);
     padding: 14px;
-    text-align: left;
-    border: none !important;
-    /* pas de bordure */
+    text-shadow: 0 0 6px rgba(0, 132, 255, 0.4);
+    letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
-/* Cellules */
 table td {
-    padding: 14px 18px;
-    color: #243247;
-    background: #ffffff;
-    border: none !important;
-    /* supprime les lignes */
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
 }
 
-/* Alternance très légère */
-table tr:nth-child(even) td {
-    background: #f5f7fa;
-    /* gris clair très doux */
-}
-
-/* Effet hover propre */
 table tr:hover td {
-    background: #eaf1ff;
-    /* bleu très léger */
+    background: rgba(0, 132, 255, 0.10);
+}
+
+
+/* ============================================================
+   ICONES — EDIT / DELETE
+============================================================ */
+.edit-icon {
+    color: #4da3ff;
+    font-size: 20px;
     transition: 0.25s ease;
 }
 
-/* Première colonne mise en valeur */
-table td:first-child {
-    font-weight: 700;
-    color: #1b3d7a;
+.delete-icon {
+    color: #ff4d4f;
+    font-size: 20px;
+    transition: 0.25s ease;
 }
 
-#cli {
-    color: rgb(10, 103, 209);
+.edit-icon:hover {
+    transform: scale(1.3);
+    color: #1e90ff;
+}
+
+.delete-icon:hover {
+    transform: scale(1.3);
+    color: #ff2225;
 }
 
 
-/* ===== PAGE RAPPORT ===== */
-.rapport-container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 20px;
-}
 
-.titre-page {
-    color: #e8eefc;
-    font-size: 35px;
-    margin-bottom: 30px;
-}
-
-/* ====== CARTE ====== */
-.card-rapport {
-    background: #13294b;
-    padding: 25px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-}
-
-.card-rapport h2 {
-    color: #fff;
-    margin-bottom: 15px;
-}
-
-/* ====== LISTE ====== */
-.list-box {
-    list-style: none;
-    padding-left: 0;
-}
-
-.list-box li {
-    background: #f5f7ff;
-    padding: 12px 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    color: #222;
-}
-
-/* ===== FORM FILTRE ===== */
-.form-filtre {
+.filter-item {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 20px;
-    margin-bottom: 20px;
 }
 
-.form-filtre input {
-    width: 130px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: none;
+.filter-item .circle {
+    margin-bottom: 15px;
+    /* ESPACE ENTRE LE CERCLE ET LE TEXTE */
 }
 
-/* ===== BOUTONS ===== */
-.btn-primary {
-    background: linear-gradient(45deg, #1c5ddf, #4e8bff);
-    border: none;
-    padding: 10px 18px;
-    color: white;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
+.filter-item .label-text {
+    margin-top: 5px;
+    /* Optionnel : ajustement fin */
 }
-
-.btn-row {
-    margin-top: 25px;
-}
-
-.btn-secondary {
-    background: #eee;
-    padding: 10px 16px;
-    border-radius: 6px;
-    color: #001d3d;
-    font-weight: bold;
-    margin-right: 10px;
-    text-decoration: none;
-}
-
-.btn-secondary:hover {
-    background: #ccc;
-}
-
-#span {
-    font-size: 50px;
-}
-
-
-/* ===========================
-   Icône Modifier ✏️
-   =========================== */
 
 /* ===============================
-   Icône Modifier – FORCER le style
-   =============================== */
+   CONTENEUR DES GROUPES
+================================*/
+.group-card h3 {
+    color: #cfe6ff;
+    font-size: 22px;
+    margin-bottom: 18px;
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(0, 132, 255, 0.5);
+    width: 400px;
+}
 
-/* lien icône */
-a.edit-icon {
-    text-decoration: none !important;
-    /* supprime underline */
-    border: none !important;
-    box-shadow: none !important;
+/* ===============================
+   CONTENEUR DES GROUPES
+   -> 2 colonnes pour group1 & group2
+   -> group3 sur toute la ligne suivante
+================================*/
+.dashboard-groups {
+    width: 100%;
+    max-width: 1150px;
+    /* centré dans la page */
+    margin: 40px auto 0;
+    /* centré horizontalement */
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* 2 colonnes */
+    gap: 35px;
+    /* espace entre les groupes */
+    margin-right: 400px;
+}
 
-    color: #2563eb;
-    font-size: 18px;
+.dashboard-groups a {
+    text-decoration: none;
+}
+
+/* group1 et group2 prennent chacun une colonne */
+#group1,
+#group2 {
+    width: 100%;
+    /* 👉 Nouvelle ombre pour bien séparer les cards */
+
+    backdrop-filter: blur(6px);
+    transition: 0.25s ease;
+
+
+}
+
+#group1 .menu-sections button {
+    background: linear-gradient(135deg, #07b4eed6, #22d3eed7);
+    color: white;
+
+}
+
+#group2 .menu-sections button {
+    background: linear-gradient(#f99e9ed0, #f6acacdf);
+    color: white;
+
+}
+
+#group3 .menu-sections button {
+    background: linear-gradient(#6a5fffda, #7a71f6dd);
+    color: white;
+
+}
+
+/* group3 prend toute la ligne du dessous */
+#group3 {
+    grid-column: 1 / -1;
+    width: 100%;
+
+}
+
+
+
+
+
+/* ===============================
+   GRANDES CARDS
+================================*/
+.menu-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+}
+
+/* Chaque card */
+.menu-sections button {
+    width: 235px;
+    height: 148px;
+
+    background: linear-gradient(145deg, #0c2c55, #114a8b);
+    border-radius: 18px;
+    border: none;
+
+    padding: 18px;
+    text-align: left;
+
+    color: white;
     cursor: pointer;
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    transition: transform 0.2s ease, color 0.2s ease;
+    transition: 0.28s ease;
+    position: relative;
 }
 
-/* hover */
-a.edit-icon:hover {
-    color: #1e40af;
-    transform: scale(1.25);
+.menu-sections button:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 22px rgba(26, 140, 255, 0.60);
+    background: linear-gradient(145deg, #1358a6, #1a7cff);
 }
 
-/* IMPORTANT : au cas où underline vient du tableau */
-td a.edit-icon,
-table a.edit-icon {
-    text-decoration: none !important;
-    border-bottom: none !important;
+/* Icone */
+.menu-sections button .material-icons-round {
+    font-size: 32px;
+    color: #cfe6ff;
+    margin-bottom: 8px;
+    display: block;
 }
 
-/* supprimer underline bleu/violet global */
-a:visited,
-a:link {
-    text-decoration: none;
+/* Titre */
+.menu-sections button strong {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Description */
+.menu-sections button p {
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+/* ======= GRID POUR LES SECTIONS (BENTO DASHBOARD) ======= */
+.menu-sections {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 25px !important;
+    margin-top: 35px !important;
+    margin-bottom: 40px !important;
+    width: 100% !important;
+}
+
+.menu-sections button {
+    width: 100% !important;
+}
+
+/* Style d'une carte */
+.menu-sections button {
+    background: linear-gradient(145deg, #0b2241, #10305c);
+    border: 1px solid rgba(0, 132, 255, 0.35);
+    border-radius: 18px;
+    padding: 22px;
+
+    color: white;
+    font-size: 18px;
+    text-align: left;
+
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    box-shadow: 0 0 22px rgba(0, 132, 255, 0.2);
+    transition: 0.25s ease;
+}
+
+/* Icône */
+.menu-sections button span.material-icons-round {
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+/* Effet hover */
+.menu-sections button:hover {
+    transform: translateY(-4px);
+    background: rgba(0, 132, 255, 0.25);
+    box-shadow: 0 0 25px rgba(0, 132, 255, 0.5);
 }

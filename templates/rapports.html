@@ -1,73 +1,149 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<!DOCTYPE html>
+<html lang="fr">
 
-<div class="rapport-container">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Patrimoine</title>
 
-    <h1 class="titre-page">Rapports Patrimoine</h1>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- ===================== FILTRE ===================== -->
-    <div class="card-rapport">
-        <h2>Bâtiments restaurés en {{ annee }}</h2>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='cssrapport.css') }}">
+</head>
 
-        <form method="get" action="/rapports" class="form-filtre">
-            <div class="form-group">
-                <label>Année :</label>
-                <input type="number" name="annee" value="{{ annee }}">
+<body>
+
+    <!-- BOUTON MENU -->
+    <div class="menu-btn" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar" class="sidebar mini">
+
+        <div class="sidebar-header">
+
+            <button class="close-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="menu-top">
+            <div class="item" onclick="window.location.href='/index'">
+                <i class="fa-solid fa-house"></i>
+                <p>Accueil</p>
             </div>
 
-            <button type="submit" class="btn-primary">Filtrer</button>
-        </form>
+            <div class="item active" onclick="window.location.href='/rapports'">
+                <i class="fa-solid fa-chart-line"></i>
+                <p>Dashboard Analyse</p>
+            </div>
 
-        <ul class="list-box">
-            {% for b in restaures %}
-            <li><strong>{{ b[0] }}</strong> — {{ b[1] }}</li>
-            {% endfor %}
-        </ul>
+            <div class="item" onclick="window.location.href='/maintenance'">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                <p>Maintenance</p>
+            </div>
+
+            <div class="item" onclick="window.location.href='/support'">
+                <i class="fa-solid fa-headset"></i>
+                <p>Support</p>
+            </div>
+        </div>
     </div>
 
-    <!-- ===================== MAUVAIS ÉTAT ===================== -->
-    <div class="card-rapport">
-        <h2>Bâtiments en mauvais état</h2>
-        <ul class="list-box">
-            {% for b in mauvais %}
-            <li><strong>{{ b[0] }}</strong> — {{ b[1] }} ({{ b[2] }})</li>
-            {% endfor %}
-        </ul>
+    <!-- OVERLAY -->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- CONTENU -->
+    <div class="content">
+
+        <h1 class="dashboard-title"> Rapport</h1>
+
+        <!-- FILTRE -->
+        <div class="filter-card">
+            <h2>Filtrer les données par année</h2>
+            <form method="get" action="/rapports">
+                <input type="number" name="annee" value="{{ annee }}" placeholder="Année">
+                <button type="submit" class="btn-primary">Filtrer</button>
+            </form>
+        </div>
+
+        <!-- CARTES -->
+        <div class="stats-grid">
+
+            <div class="stat-card" id="batiment-restaure">
+                <i class="fa-solid fa-building"></i>
+                <h3>{{ restaures|length }}</h3>
+                <p>Bâtiments restaurés</p>
+            </div>
+
+            <div class="stat-card" id="batiment-en-mauvaisetat">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <h3>{{ mauvais|length }}</h3>
+                <p>Bâtiments en mauvais état</p>
+            </div>
+
+        </div>
+
+        <!-- GRAPHE -->
+        <div class="chart-card">
+            <h2>Évolution annuelle des restaurations</h2>
+            <img src="data:image/png;base64,{{ graph_image }}" alt="Histogramme des restaurations"
+                style="width:100%; max-width:700px; display:block; margin:auto;">
+        </div>
+
+
+        <!-- SECTIONS -->
+        <div class="section-grid">
+
+            <div class="section-card" id="intervention">
+                <h2>Interventions par entreprise</h2>
+                <ul>
+                    {% for p in interventions %}
+                    <li><span>{{ p[0] }}</span><strong>{{ p[1] }}</strong></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="section-card" id="totale-quartuier">
+                <h2>Coût total par quartier</h2>
+                <ul>
+                    {% for z in cout_quartier %}
+                    <li><span>{{ z[0] }}</span><strong>{{ z[1] }} DH</strong></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="section-card" id="P3">
+                <h2>Prestataires (> 3 chantiers)</h2>
+                <ul>
+                    {% for p in prestataires %}
+                    <li><span>{{ p[0] }}</span><strong>{{ p[1] }}</strong></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
     </div>
 
-    <!-- ===================== INTERVENTIONS ===================== -->
-    <div class="card-rapport">
-        <h2>Nombre d'interventions par entreprise</h2>
-        <ul class="list-box">
-            {% for p in interventions %}
-            <li>{{ p[0] }} : <strong>{{ p[1] }}</strong></li>
-            {% endfor %}
-        </ul>
-    </div>
 
-    <!-- ===================== COUT PAR QUARTIER ===================== -->
-    <div class="card-rapport">
-        <h2>Coût total des restaurations par quartier</h2>
-        <ul class="list-box">
-            {% for z in cout_quartier %}
-            <li>{{ z[0] }} : <strong>{{ z[1] }} DH</strong></li>
-            {% endfor %}
-        </ul>
-    </div>
+    <!-- ================= JS ================= -->
 
-    <!-- ===================== PRESTATAIRES ===================== -->
-    <div class="card-rapport">
-        <h2>Prestataires ayant réalisé plus de 3 chantiers</h2>
-        <ul class="list-box">
-            {% for p in prestataires %}
-            <li>{{ p[0] }} : <strong>{{ p[1] }}</strong> chantiers</li>
-            {% endfor %}
-        </ul>
-    </div>
+    <!-- Toggle Sidebar -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("overlay");
+            const content = document.querySelector(".content");
 
-    <!-- ===================== BOUTONS ===================== -->
-    <div class="btn-row">
-        <a href="/rapports" class="btn-secondary">Actualiser</a>
-        <a href="/index" class="btn-secondary">Retour à l'accueil</a>
-    </div>
+            sidebar.classList.toggle("open");
+            overlay.classList.toggle("active");
+            content.classList.toggle("blur-active");
+        }
+    </script>
 
-</div>
+
+</body>
+
+</html>

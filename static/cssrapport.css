@@ -1,0 +1,572 @@
+/* --------------------------------------------------
+   GLOBAL
+-------------------------------------------------- */
+body {
+    margin-left: 10px;
+    font-family: "Poppins", sans-serif;
+    background: #0b0e1a;
+    color: white;
+}
+
+.content {
+    padding: 30px;
+    margin-left: 0;
+}
+
+h1 {
+    margin-bottom: 30px;
+}
+
+/* --------------------------------------------------
+   MENU BUTTON (top)
+-------------------------------------------------- */
+.menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #1e293b;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 2000;
+}
+
+.menu-btn i {
+    font-size: 22px;
+    color: white;
+}
+
+/* --------------------------------------------------
+   SIDEBAR
+-------------------------------------------------- */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    /* cachée */
+    width: 260px;
+    height: 100%;
+    background: #111827;
+    padding: 20px;
+    transition: left 0.35s ease;
+    z-index: 2500;
+    overflow-y: auto;
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+/* Header du menu */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.sidebar-header h2 {
+    color: #4e8cff;
+    font-size: 22px;
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* Items du menu */
+.menu-top .item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: #1e293b;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.menu-top .item:hover {
+    background: #334155;
+    transform: translateX(5px);
+}
+
+.menu-top .item i {
+    font-size: 20px;
+    color: #4e8cff;
+}
+
+.menu-top .item p {
+    margin: 0;
+    font-size: 15px;
+}
+
+/* --------------------------------------------------
+   OVERLAY
+-------------------------------------------------- */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    z-index: 2000;
+}
+
+.overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* --------------------------------------------------
+   KPI CARDS
+-------------------------------------------------- */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.kpi-card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    transition: 0.25s;
+}
+
+.kpi-card:hover {
+    transform: translateY(-3px);
+    background: #24314a;
+}
+
+.kpi-card i {
+    font-size: 32px;
+    color: #4e8cff;
+}
+
+.kpi-card h3 {
+    margin: 10px 0;
+    font-size: 32px;
+}
+
+.kpi-card p {
+    color: #cbd5e1;
+}
+
+/* --------------------------------------------------
+   GRID LAYOUT
+-------------------------------------------------- */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-top: 30px;
+}
+
+/* --------------------------------------------------
+   CARDS (sections)
+-------------------------------------------------- */
+.card {
+    background: #162033;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 14px rgba(5, 48, 219, 0.35);
+}
+
+.card.wide {
+    grid-column: span 2;
+}
+
+.section-title {
+    margin-bottom: 15px;
+    border-left: 4px solid #4e8cff;
+    padding-left: 10px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+/* --------------------------------------------------
+   LISTES
+-------------------------------------------------- */
+.list {
+    list-style: none;
+    padding: 0;
+}
+
+.list li {
+    background: #1e293b;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* --------------------------------------------------
+   FILTRE ANNÉE
+-------------------------------------------------- */
+.filter-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.filter-row input {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    background: #1e293b;
+    color: white;
+    width: 140px;
+}
+
+.btn-primary {
+    background: #4e8cff;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    color: white;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background: #326bd9;
+}
+
+/* --------------------------------------------------
+   CANVAS GRAPH
+-------------------------------------------------- */
+canvas {
+    width: 100% !important;
+    height: 300px !important;
+}
+
+/* --------------------------------------------------
+   RESPONSIVE
+-------------------------------------------------- */
+@media (max-width: 1100px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+
+/* ====================================
+      SIDEBAR MINI / FULL
+==================================== */
+
+/* Base sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 70px;
+    /* MINI MODE */
+    height: 100vh;
+    background: #111827;
+    padding-top: 20px;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    z-index: 2000;
+}
+
+/* FULL MODE */
+.sidebar.open {
+    width: 260px;
+}
+
+/* Texte caché en mode MINI */
+.sidebar .item p,
+.sidebar-header .logo-text,
+.sidebar .close-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+/* Texte visible en mode FULL */
+.sidebar.open .item p,
+.sidebar.open .logo-text,
+.sidebar.open .close-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Sidebar header */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.logo-text {
+    color: #4e8cff;
+    font-size: 20px;
+}
+
+/* Items */
+.menu-top .item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: white;
+}
+
+.menu-top .item:hover {
+    background: #1e293b;
+}
+
+.menu-top .item.active {
+    background: #1e293b;
+    border-left: 4px solid #4e8cff;
+}
+
+.menu-top i {
+    font-size: 22px;
+    min-width: 25px;
+}
+
+/* Menu button */
+.menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #111827;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 2100;
+}
+
+.menu-btn i {
+    color: white;
+    font-size: 22px;
+}
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    z-index: 1500;
+}
+
+.overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ====================================
+      CONTENT
+==================================== */
+
+.content {
+    margin-left: 90px;
+    padding: 30px;
+    color: white;
+    font-family: "Poppins", sans-serif;
+}
+
+.dashboard-title {
+    font-size: 32px;
+    margin-bottom: 25px;
+}
+
+/* Filter card */
+.filter-card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.filter-card input {
+    padding: 10px;
+    width: 150px;
+    border-radius: 8px;
+    border: none;
+    margin-right: 10px;
+}
+
+.btn-primary {
+    background: #4e8cff;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+}
+
+/* Stats */
+.stats-grid {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+
+.stat-card {
+    flex: 1;
+    background: #1e293b;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.stat-card i {
+    font-size: 40px;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.stat-card h3 {
+    font-size: 32px;
+    margin: 0;
+}
+
+/* Chart */
+.chart-card {
+    background: #1e293b;
+    padding: 25px;
+}
+
+
+
+
+
+
+
+/* ============================
+   GRID DES SECTIONS (2 colonnes)
+============================ */
+.section-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-top: 30px;
+}
+
+/* Responsive : téléphone → 1 seule colonne */
+@media (max-width: 900px) {
+    .section-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================
+   STYLE CARD SECTION
+============================ */
+.section-card {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
+}
+
+/* Titre des cards */
+.section-card h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+/* UL interne */
+.section-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Chaque ligne */
+.section-card li {
+    background: #0f172a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid #1e293b;
+    font-size: 15px;
+    color: #e5e5e5;
+    transition: 0.2s ease;
+}
+
+.section-card li:hover {
+    background: #1a2236;
+    transform: translateX(5px);
+}
+
+.section-card li strong {
+    color: #4e8cff;
+    font-weight: 600;
+}
+
+
+/* Contenu principal */
+.content {
+    margin-left: 90px;
+    padding: 30px;
+    color: white;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+/* Quand overlay est actif → flou + fade */
+.blur-active {
+    filter: blur(4px);
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+#batiment-en-mauvaisetat {
+    background: linear-gradient(#f99e9ed0, #f6acacdf);
+}
+
+#batiment-restaure {
+    background: linear-gradient(135deg, #07b4eed6, #22d3eed7);
+
+}
+
+#totale-quartuier {
+    background: linear-gradient(#6a5fffc9, #7a71f6b4);
+}
+
+#intervention {
+    background: linear-gradient(#3b82f6, #1859c1);
+
+}
+
+#P3 {
+    background: linear-gradient(135deg, #07b4eed6, #22d3eed7);
+}

@@ -7,7 +7,7 @@ def batiments_mauvais_etat():
         SELECT b.nom_batiment, e.etat, e.date_etat
         FROM batiment b
         JOIN etat_conservation e ON b.Id_batiment = e.Id_batiment
-        WHERE e.etat = 'mauvais'
+        WHERE e.etat = 'Mauvais'
         ORDER BY e.date_etat DESC;
     """)
     result = cur.fetchall()
@@ -74,3 +74,22 @@ def prestataires_plus_de_3_chantiers():
     cur.close()
     conn.close()
     return result
+
+
+
+def evolution_restaurations_par_annee():
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT EXTRACT(YEAR FROM i.date_travaux)::int AS annee,
+               COUNT(*) AS nb_restaurations
+        FROM intervention i
+        GROUP BY annee
+        ORDER BY annee;
+    """)
+    result = cur.fetchall()
+    cur.close()
+    conn.close()
+    return result
+
+

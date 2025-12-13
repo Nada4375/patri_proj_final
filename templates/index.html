@@ -9,572 +9,684 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <!-- Ton CSS Flask -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+
+
+
 </head>
 
 <body>
-    <header>
-        <span id="ci">Rabat – Système d'information urbain</span>
-        <h1><span id="span">🗺</span> Cartographie du patrimoine de Rabat</h1>
-        <p>Monuments, bâtiments administratifs et jardins</p>
-    </header>
+    <div id="page-content">
+        <header>
+            <span id="ci">Rabat – Système d'information urbain</span>
+            <h1><span id="span">🗺</span> Cartographie du patrimoine de Rabat</h1>
+            <p>Monuments, bâtiments administratifs et jardins</p>
+        </header>
 
-    <!-- Boutons de filtre de la CARTE -->
-    <div class="controls">
-        <button class="btn" onclick="showAll()">🌍 Tout afficher</button>
-        <button class="btn" onclick="showMonuments()">🏛 Monuments</button>
-        <button class="btn" onclick="showBuildings()">🏢 Bâtiments</button>
-        <button class="btn" onclick="showJardins()">🌳 Jardins</button>
-    </div>
+        <div id="contenu-principale">
+            <!-- Boutons de filtre de la CARTE -->
+            <div class="map-filter-group">
 
-    <!-- Conteneur de la carte -->
-    <div id="map"></div>
-    <!-- ========= MENU PRINCIPAL DES SECTIONS ========= -->
-    <div class="menu-sections">
-        <button onclick="openSection('zones'); resetZoneForm();"> 🌍 Zones </button>
-        <button onclick="openSection('proprietaires'); resetProprietaireForm();"> 👤 Propriétaires </button>
-        <button onclick="openSection('types'); resetTypeForm();"> 🏗 Types de Bâtiment</button>
-        <button onclick="openSection('batiments'); resetBatimentForm();"> 🏛 Bâtiments </button>
-        <button onclick="openSection('prestataires'); resetPrestataireForm();"> 🧱 Prestataires </button>
-        <button onclick="openSection('interventions'); resetInterventionForm();"> 🛠 Interventions</button>
-        <button onclick="openSection('inspections'); resetInspectionForm();"> 🔍 Inspections</button>
-        <button onclick="openSection('documents'); resetDocumentForm();"> 📄 Documents</button>
-        <button onclick="openSection('etat_conservation')">📌 État Conservation</button>
-        <button onclick="openSection('rapports')">📊 Rapports</button>
-    </div>
+                <label class="filter-item">
+                    <input type="radio" name="filter" value="all" checked>
+                    <div class="circle">
+                        <span class="material-icons-round">public</span>
+                    </div>
+                    <span>Tout afficher</span>
+                </label>
 
-    <!-- ========= SECTIONS CONTENU ========= -->
+                <label class="filter-item">
+                    <input type="radio" name="filter" value="monuments">
+                    <div class="circle">
+                        <span class="material-icons-round">account_balance</span>
+                    </div>
+                    <span>Monuments</span>
+                </label>
 
-    <!-- ZONES -->
-    <section id="zones" class="content-section" style="display:none;">
-        <h2>Gestion des Zones</h2>
+                <label class="filter-item">
+                    <input type="radio" name="filter" value="batiments">
+                    <div class="circle">
+                        <span class="material-icons-round">apartment</span>
+                    </div>
+                    <span>Bâtiments</span>
+                </label>
 
-        <h3>Ajouter une zone</h3>
-        <form action="/add_zone" method="POST" id="form-zone">
-
-            <input type="hidden" name="id_zone" id="zone_id">
-
-            <label>Nom Zone :</label>
-            <input type="text" name="nom_zone" id="zone_nom" required>
-
-            <button type="submit" id="zone_submit_btn">Ajouter</button>
-        </form>
+                <label class="filter-item">
+                    <input type="radio" name="filter" value="jardins">
+                    <div class="circle">
+                        <span class="material-icons-round">park</span>
+                    </div>
+                    <span>Jardins</span>
+                </label>
+            </div>
 
 
-        <h3>Liste des Zones</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Modefier</th>
-            </tr>
+            <!-- Conteneur de la carte -->
+            <div id="map"></div>
+            <!-- ========= MENU PRINCIPAL DES SECTIONS ========= -->
+            <div class="dashboard-groups">
 
-            {% for z in zones %}
-            <tr>
-                <td>{{ z[0] }}</td>
-                <td>{{ z[1] }}</td>
-                <td>
-                    <a href="#" onclick="editZone('{{ z[0] }}','{{ z[1] }}')">✏️</a>
-                </td>
+                <!-- Groupe 1 -->
+                <div class="group-card" id="group1">
+                    <h3>Gestion du Patrimoine</h3>
 
-            </tr>
+                    <div class="menu-sections" id="g1menu">
 
-            {% endfor %}
-        </table>
-    </section>
+                        <a href="#form-zone"><button onclick="openSection('zones')">
+                                <span class="material-icons-round">public</span>
+                                <strong>Zones</strong>
+                                <p>Gestion des zones géographiques</p>
+                            </button></a>
 
-    <!-- TYPES DE BATIMENT -->
-    <section id="types" class="content-section" style="display:none;">
-        <h2>Gestion des Types de Bâtiment</h2>
+                        <a href="#form-proprietaire"><button onclick="openSection('proprietaires')">
+                                <span class="material-icons-round">person</span>
+                                <strong>Propriétaires</strong>
+                                <p>Liste et suivi des propriétaires</p>
+                            </button></a>
 
-        <h3>Ajouter un type</h3>
-        <form action="/add_type" method="POST" id="form-type">
+                        <a href="#form-type"><button onclick="openSection('types')">
+                                <span class="material-icons-round">warehouse</span>
+                                <strong>Types de Bâtiment</strong>
+                                <p>Catégories de bâtiments</p>
+                            </button></a>
 
-            <!-- utilisé seulement pour modification -->
-            <input type="hidden" name="id_type" id="type_id">
+                        <a href="#form-batiment"><button onclick="openSection('batiments')">
+                                <span class="material-icons-round">location_city</span>
+                                <strong>Bâtiments</strong>
+                                <p>Ensemble des bâtiments</p>
+                            </button></a>
 
-            <label>Libellé :</label>
-            <input type="text" name="libelle" id="type_libelle" required><br>
-
-            <button type="submit" id="type_submit_btn">Ajouter</button>
-        </form>
-
-
-        <h3>Liste des Types</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Libellé</th>
-                <th>Modefier</th>
-            </tr>
-
-            {% for t in types %}
-            <tr>
-                <td>{{ t[0] }}</td>
-                <td>{{ t[1] }}</td>
-                <td>
-                    <a href="#" onclick="editType('{{ t[0] }}','{{ t[1] }}')">
-                        ✏️
-                    </a>
-                </td>
-
-            </tr>
-
-            {% endfor %}
-        </table>
-    </section>
-
-    <!-- PROPRIETAIRES -->
-    <section id="proprietaires" class="content-section" style="display:none;">
-        <h2>Gestion des Propriétaires</h2>
-
-        <h3>Ajouter un propriétaire</h3>
-        <form action="/add_proprietaire" method="POST" id="form-proprietaire">
-
-            <!-- utilisé seulement pour modification -->
-            <input type="hidden" name="id_proprietaire" id="prop_id">
-
-            <label>Nom :</label>
-            <input type="text" name="nom_proprietaire" id="prop_nom" required><br>
-
-            <label>Type :</label>
-            <input type="text" name="type_proprietaire" id="prop_type" required><br>
-
-            <label>Contact :</label>
-            <input type="text" name="contact" id="prop_contact"><br>
-
-            <button type="submit" id="prop_submit_btn">Ajouter</button>
-        </form>
+                    </div>
+                </div>
 
 
-        <h3>Liste des Propriétaires</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Type</th>
-                <th>Contact</th>
-                <th>Modifier</th>
-            </tr>
+                <!-- Groupe 2 -->
+                <div class="group-card" id="group2">
+                    <h3>Activités & Interventions</h3>
 
-            {% for p in proprietaires %}
-            <tr>
-                <td>{{ p[0] }}</td>
-                <td>{{ p[1] }}</td>
-                <td>{{ p[2] }}</td>
-                <td>{{ p[3] }}</td>
-                <td>
-                    <a href="#" onclick="editProprietaire(
-                    '{{ p[0] }}',
-                    '{{ p[1] }}',
-                    '{{ p[2] }}',
-                    '{{ p[3] }}'
-                )">
-                        ✏️
-                    </a>
-                </td>
+                    <div class="menu-sections" id="g2menu">
 
-            </tr>
+                        <a href="#form-prestataire"><button onclick="openSection('prestataires')">
+                                <span class="material-icons-round">handyman</span>
+                                <strong>Prestataires</strong>
+                                <p>Partenaires & services</p>
+                            </button></a>
 
-            {% endfor %}
-        </table>
-    </section>
+                        <a href="#form-intervention"><button onclick="openSection('interventions')">
+                                <span class="material-icons-round">construction</span>
+                                <strong>Interventions</strong>
+                                <p>Travaux & opérations</p>
+                            </button></a>
 
-    <!-- ETAT DE CONSERVATION -->
-    <section id="etat_conservation" class="content-section" style="display:none;">
-        <h2>État de Conservation des Bâtiments</h2>
+                        <a href="#form-inspection"><button onclick="openSection('inspections')">
+                                <span class="material-icons-round">search</span>
+                                <strong>Inspections</strong>
+                                <p>Contrôles & observations</p>
+                            </button></a>
 
-        <h3>Liste des états</h3>
-        <table>
-            <tr>
-                <th>Bâtiment</th>
-                <th>Date</th>
-                <th>État</th>
-            </tr>
-            {% for e in etat_conservation %}
-            <tr>
-                <td>{{ e[0] }}</td>
-                <td>{{ e[1] }}</td>
-                <td>{{ e[2] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </section>
+                    </div>
+                </div>
 
-    <!-- BÂTIMENTS -->
-    <section id="batiments" class="content-section">
-        <h2>Gestion des Bâtiments</h2>
-        <div class="form-container">
-            <h3>Ajouter un bâtiment</h3>
-            <form action="/add_batiment" method="POST" id="form-batiment">
 
-                <!-- utilisé seulement pour la modification -->
-                <input type="hidden" name="id_batiment" id="id_batiment">
+                <!-- Groupe 3 -->
+                <div class="group-card" id="group3">
+                    <h3>Documents & États</h3>
 
-                <label>Nom :</label>
-                <input type="text" name="name" id="bat_nom" required><br>
+                    <div class="menu-sections">
 
-                <label>Année :</label>
-                <input type="number" name="year" id="bat_year" min="1800" max="2100" required><br>
+                        <a href="#form-document" id="g3menu"><button onclick="openSection('documents')">
+                                <div id="g3menu"><span class="material-icons-round">description</span>
+                                    <strong>Documents</strong>
+                                    <p>Pièces, rapports & fichiers</p>
+                                </div>
+                            </button></a>
 
-                <label>État / Protection :</label>
-                <input type="text" name="etat" id="bat_etat" required><br>
+                        <a href="#etat_conservation" id="g3menu"><button onclick="openSection('etat_conservation')">
+                                <span class="material-icons-round">inventory</span>
+                                <strong>État de Conservation</strong>
+                                <p>Qualité & conservation</p>
+                            </button></a>
 
-                <label>Latitude :</label>
-                <input type="text" name="latitude" id="bat_lat" required><br>
+                    </div>
+                </div>
 
-                <label>Longitude :</label>
-                <input type="text" name="longitude" id="bat_lon" required><br>
+            </div>
 
-                <label>Adresse :</label>
-                <input type="text" name="adresse" id="bat_adresse" required><br>
+            <!-- ========= SECTIONS CONTENU ========= -->
 
-                <!-- ZONE -->
-                <label>Zone :</label>
-                <select name="zone" id="bat_zone">
-                    <option value="">Aucune</option>
+            <!-- ZONES -->
+            <section id="zones" class="content-section" style="display:none;">
+                <h2>Gestion des Zones</h2>
+
+                <form action="/add_zone" method="POST" id="form-zone">
+
+                    <input type="hidden" name="id_zone" id="zone_id">
+
+                    <label>Nom Zone :</label>
+                    <input type="text" name="nom_zone" id="zone_nom" required>
+
+                    <button type="submit" id="zone_submit_btn">Ajouter</button>
+                </form>
+
+
+                <h3>Liste des Zones</h3>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Modefier</th>
+                        <th>Supprimer</th>
+                    </tr>
+
                     {% for z in zones %}
-                    <option value="{{ z[0] }}">{{ z[1] }}</option>
-                    {% endfor %}
-                </select><br>
+                    <tr>
+                        <td>{{ z[0] }}</td>
+                        <td>{{ z[1] }}</td>
+                        <td>
+                            <a href="#" onclick="editZone('{{ z[0] }}','{{ z[1] }}')"><i
+                                    class="fa-solid fa-pen-to-square edit-icon"></i></a>
+                        </td>
 
-                <!-- TYPE -->
-                <label>Type :</label>
-                <select name="type" id="bat_type">
-                    <option value="">Aucun</option>
+                        <td>
+                            <a href="/delete_zone/{{ z[0] }}" onclick="return confirmDelete();" class="delete-btn"><i
+                                    class="fa-solid fa-trash delete-icon"></i></a>
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+                </table>
+            </section>
+
+            <!-- TYPES DE BATIMENT -->
+            <section id="types" class="content-section" style="display:none;">
+                <h2>Gestion des Types de Bâtiment</h2>
+                <form action="/add_type" method="POST" id="form-type">
+
+                    <!-- utilisé seulement pour modification -->
+                    <input type="hidden" name="id_type" id="type_id">
+
+                    <label>Libellé :</label>
+                    <input type="text" name="libelle" id="type_libelle" required><br>
+
+                    <button type="submit" id="type_submit_btn">Ajouter</button>
+                </form>
+
+
+                <h3>Liste des Types</h3>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Libellé</th>
+                        <th>Modefier</th>
+                        <th>Supprimer</th>
+                    </tr>
+
                     {% for t in types %}
-                    <option value="{{ t[0] }}">{{ t[1] }}</option>
-                    {% endfor %}
-                </select><br>
+                    <tr>
+                        <td>{{ t[0] }}</td>
+                        <td>{{ t[1] }}</td>
+                        <td>
+                            <a href="#" onclick="editType('{{ t[0] }}','{{ t[1] }}')"><i
+                                    class="fa-solid fa-pen-to-square edit-icon"></i></a>
+                        </td>
+                        <td>
+                            <a href="/delete_type/{{ t[0] }}" onclick="return confirmDelete();" class="delete-btn"><i
+                                    class="fa-solid fa-trash delete-icon"></i></a>
+                        </td>
 
-                <!-- PROPRIÉTAIRE -->
-                <label>Propriétaire :</label>
-                <select name="proprietaire" id="bat_prop">
-                    <option value="">Aucun</option>
+
+                    </tr>
+
+                    {% endfor %}
+                </table>
+            </section>
+
+            <!-- PROPRIETAIRES -->
+            <section id="proprietaires" class="content-section" style="display:none;">
+                <h2>Gestion des Propriétaires</h2>
+                <form action="/add_proprietaire" method="POST" id="form-proprietaire">
+
+                    <!-- utilisé seulement pour modification -->
+                    <input type="hidden" name="id_proprietaire" id="prop_id">
+
+                    <label>Nom :</label>
+                    <input type="text" name="nom_proprietaire" id="prop_nom" required><br>
+
+                    <label>Type :</label>
+                    <input type="text" name="type_proprietaire" id="prop_type" required><br>
+
+                    <label>Contact :</label>
+                    <input type="text" name="contact" id="prop_contact"><br>
+
+                    <button type="submit" id="prop_submit_btn">Ajouter</button>
+                </form>
+
+
+                <h3>Liste des Propriétaires</h3>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Type</th>
+                        <th>Contact</th>
+                        <th>Modifier</th>
+                        <th>Supprimer</th>
+                    </tr>
+
                     {% for p in proprietaires %}
-                    <option value="{{ p[0] }}">{{ p[1] }}</option>
+                    <tr>
+                        <td>{{ p[0] }}</td>
+                        <td>{{ p[1] }}</td>
+                        <td>{{ p[2] }}</td>
+                        <td>{{ p[3] }}</td>
+                        <td>
+                            <a href="#"
+                                onclick="editProprietaire('{{ p[0] }}','{{ p[1] }}','{{ p[2] }}','{{ p[3] }}')"><i
+                                    class="fa-solid fa-pen-to-square edit-icon"></i></a>
+                        </td>
+                        <td>
+                            <a href="/delete_proprietaire/{{ p[0] }}" onclick="return confirmDelete();"><i
+                                    class="fa-solid fa-trash delete-icon"></i></a>
+                        </td>
+
+                    </tr>
+
                     {% endfor %}
-                </select><br>
+                </table>
+            </section>
 
-                <button type="submit" id="bat_submit_btn">Ajouter</button>
+            <!-- ETAT DE CONSERVATION -->
+            <section id="etat_conservation" class="content-section" style="display:none;">
+                <h2>État de Conservation des Bâtiments</h2>
 
+                <h3>Liste des états</h3>
+                <table>
+                    <tr>
+                        <th>Bâtiment</th>
+                        <th>Date</th>
+                        <th>État</th>
+                    </tr>
+                    {% for e in etat_conservation %}
+                    <tr>
+                        <td>{{ e[0] }}</td>
+                        <td>{{ e[1] }}</td>
+                        <td>{{ e[2] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </section>
 
-            </form>
+            <!-- BÂTIMENTS -->
+            <section id="batiments" class="content-section">
+                <h2>Gestion des Bâtiments</h2>
+                <div class="form-container">
+                    <form action="/add_batiment" method="POST" id="form-batiment">
 
+                        <!-- utilisé seulement pour la modification -->
+                        <input type="hidden" name="id_batiment" id="id_batiment">
 
-            <h3>Liste des Bâtiments</h3>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>adresse</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
-                    <th>Année</th>
-                    <th>État</th>
-                    <th>Zone</th>
-                    <th>Type</th>
-                    <th>Propriétaire</th>
-                    <th>Modefier</th>
-                </tr>
+                        <label>Nom :</label>
+                        <input type="text" name="name" id="bat_nom" required><br>
 
-                {% for b in batiments %}
-                <tr>
-                    <td>{{ b[0] }}</td>
-                    <td>{{ b[1] }}</td>
-                    <td>{{ b[2] }}</td>
-                    <td>{{ b[3] }}</td>
-                    <td>{{ b[4] }}</td>
-                    <td>{{ b[5] }}</td>
-                    <td>{{ b[6] }}</td>
-                    <td>{{ b[7] }}</td>
-                    <td>{{ b[8] }}</td>
-                    <td>{{ b[9] }}</td>
-                    <td>
-                        <a href="#" onclick="editBatiment(
-                        '{{ b[0] }}',
-                        '{{ b[1] }}',
-                        '{{ b[5] }}',
-                        '{{ b[6] }}',
-                        '{{ b[3] }}',
-                        '{{ b[4] }}',
-                        '{{ b[2] }}',
-                        '{{ b[7] }}',
-                        '{{ b[8] }}',
-                        '{{ b[9] }}'
-                    )">
-                            ✏️
-                        </a>
-                    </td>
+                        <label>Année :</label>
+                        <input type="number" name="year" id="bat_year" min="1800" max="2100" required><br>
 
-                </tr>
+                        <label>État / Protection :</label>
+                        <input type="text" name="etat" id="bat_etat" required><br>
 
-                {% endfor %}
-            </table>
-    </section>
+                        <label>Latitude :</label>
+                        <input type="text" name="latitude" id="bat_lat" required><br>
 
-    <!-- PRESTATAIRES -->
-    <section id="prestataires" class="content-section" style="display:none;">
-        <h2>Gestion des Prestataires</h2>
+                        <label>Longitude :</label>
+                        <input type="text" name="longitude" id="bat_lon" required><br>
 
-        <h3>Ajouter un prestataire</h3>
-        <form action="/add_prestataire" method="POST" id="form-prestataire">
+                        <label>Adresse :</label>
+                        <input type="text" name="adresse" id="bat_adresse" required><br>
 
-            <!-- utilisé seulement pour modification -->
-            <input type="hidden" name="id_prestataire" id="pres_id">
+                        <!-- ZONE -->
+                        <label>Zone :</label>
+                        <select name="zone" id="bat_zone">
+                            <option value="">Aucune</option>
+                            {% for z in zones %}
+                            <option value="{{ z[0] }}">{{ z[1] }}</option>
+                            {% endfor %}
+                        </select><br>
 
-            <label>Nom :</label>
-            <input type="text" name="nom" id="pres_nom" required><br>
+                        <!-- TYPE -->
+                        <label>Type :</label>
+                        <select name="type" id="bat_type">
+                            <option value="">Aucun</option>
+                            {% for t in types %}
+                            <option value="{{ t[0] }}">{{ t[1] }}</option>
+                            {% endfor %}
+                        </select><br>
 
-            <label>Type :</label>
-            <input type="text" name="type" id="pres_type" required><br>
+                        <!-- PROPRIÉTAIRE -->
+                        <label>Propriétaire :</label>
+                        <select name="proprietaire" id="bat_prop">
+                            <option value="">Aucun</option>
+                            {% for p in proprietaires %}
+                            <option value="{{ p[0] }}">{{ p[1] }}</option>
+                            {% endfor %}
+                        </select><br>
 
-            <label>Contact :</label>
-            <input type="text" name="contact" id="pres_contact"><br>
-
-            <button type="submit" id="pres_submit_btn">Ajouter</button>
-        </form>
-
-
-        <h3>Liste des Prestataires</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Type</th>
-                <th>Contact</th>
-                <th>Modifier</th>
-            </tr>
-
-            {% for p in prestataires %}
-            <tr>
-                <td>{{ p[0] }}</td>
-                <td>{{ p[1] }}</td>
-                <td>{{ p[2] }}</td>
-                <td>{{ p[3] }}</td>
-                <td>
-                    <a href="#" onclick="editPrestataire(
-                    '{{ p[0] }}',
-                    '{{ p[1] }}',
-                    '{{ p[2] }}',
-                    '{{ p[3] }}'
-                )">
-                        ✏️
-                    </a>
-                </td>
-
-            </tr>
-
-            {% endfor %}
-        </table>
-    </section>
-
-    <!-- INTERVENTIONS -->
-    <section id="interventions" class="content-section" style="display:none;">
-        <h2>Gestion des Interventions</h2>
-
-        <h3>Ajouter une intervention</h3>
-        <form action="/add_intervention" method="POST" id="form-intervention">
-
-            <!-- utilisé seulement pour modification -->
-            <input type="hidden" name="id_intervention" id="interv_id">
-
-            <label>Bâtiment :</label>
-            <select name="batiment" id="interv_batiment" required>
-                {% for b in batiments %}
-                <option value="{{ b[0] }}">{{ b[1] }}</option>
-                {% endfor %}
-            </select><br>
-
-            <label>Prestataire :</label>
-            <select name="prestataire" id="interv_prestataire" required>
-                {% for p in prestataires %}
-                <option value="{{ p[0] }}">{{ p[1] }}</option>
-                {% endfor %}
-            </select><br>
-
-            <label>Date travaux :</label>
-            <input type="date" name="date_travaux" id="interv_date" required><br>
-
-            <label>Type travaux :</label>
-            <input type="text" name="type_travaux" id="interv_type" required><br>
-
-            <label>Coût :</label>
-            <input type="number" step="0.01" name="cout" id="interv_cout"><br>
-
-            <button type="submit" id="interv_submit_btn">Ajouter</button>
-        </form>
+                        <button type="submit" id="bat_submit_btn">Ajouter</button>
 
 
-        <h3>Liste des Interventions</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Bâtiment</th>
-                <th>Prestataire</th>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Coût</th>
-                <th>Modefier</th>
-            </tr>
-
-            {% for i in interventions %}
-            <tr>
-                <td>{{ i[0] }}</td>
-                <td>{{ i[1] }}</td>
-                <td>{{ i[2] }}</td>
-                <td>{{ i[3] }}</td>
-                <td>{{ i[4] }}</td>
-                <td>{{ i[5] }}</td>
-                <td>
-                    <a href="#" onclick="editIntervention(
-                    '{{ i[0] }}',
-                    '{{ i[1] }}',
-                    '{{ i[2] }}',
-                    '{{ i[3] }}',
-                    '{{ i[4] }}',
-                    '{{ i[5] }}'
-                )">
-                        ✏️
-                    </a>
-                </td>
-
-            </tr>
-
-            {% endfor %}
-        </table>
-    </section>
-
-    <!-- INSPECTIONS -->
-    <section id="inspections" class="content-section" style="display:none;">
-        <h2>Gestion des Inspections</h2>
-
-        <h3>Ajouter une inspection</h3>
-        <form action="/add_inspection" method="POST" id="form-inspection">
-
-            <!-- utilisé seulement pour modification -->
-            <input type="hidden" name="id_inspection" id="insp_id">
-
-            <label>Bâtiment :</label>
-            <select name="batiment" id="insp_batiment" required>
-                {% for b in batiments %}
-                <option value="{{ b[0] }}">{{ b[1] }}</option>
-                {% endfor %}
-            </select><br>
-
-            <label>Date inspection :</label>
-            <input type="date" name="date_inspection" id="insp_date" required><br>
-
-            <label>Rapport :</label>
-            <textarea name="rapport" id="insp_rapport"></textarea><br>
-
-            <button type="submit" id="insp_submit_btn">Ajouter</button>
-        </form>
+                    </form>
 
 
-        <h3>Liste des Inspections</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Bâtiment</th>
-                <th>Date</th>
-                <th>Rapport</th>
-                <th>Modifier</th>
-            </tr>
+                    <h3>Liste des Bâtiments</h3>
+                    <table>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>adresse</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                            <th>Année</th>
+                            <th>État</th>
+                            <th>Zone</th>
+                            <th>Type</th>
+                            <th>Propriétaire</th>
+                            <th>Modefier</th>
+                            <th>Supprimer</th>
+                        </tr>
 
-            {% for ins in inspections %}
-            <tr>
-                <td>{{ ins[0] }}</td>
-                <td>{{ ins[1] }}</td>
-                <td>{{ ins[2] }}</td>
-                <td>{{ ins[3] }}</td>
-                <td>
-                    <a href="#" onclick="editInspection(
-                    '{{ ins[0] }}',
-                    '{{ ins[1] }}',
-                    '{{ ins[2] }}',
-                    '{{ ins[3] }}'
-                )">
-                        ✏️
-                    </a>
-                </td>
+                        {% for b in batiments %}
+                        <tr>
+                            <td>{{ b[0] }}</td>
+                            <td>{{ b[1] }}</td>
+                            <td>{{ b[2] }}</td>
+                            <td>{{ b[3] }}</td>
+                            <td>{{ b[4] }}</td>
+                            <td>{{ b[5] }}</td>
+                            <td>{{ b[6] }}</td>
+                            <td>{{ b[7] }}</td>
+                            <td>{{ b[8] }}</td>
+                            <td>{{ b[9] }}</td>
+                            <td>
+                                <a href="#" onclick="editBatiment(
+        '{{ b[0] }}','{{ b[1] }}','{{ b[5] }}','{{ b[6] }}',
+        '{{ b[3] }}','{{ b[4] }}','{{ b[2] }}',
+        '{{ b[7] }}','{{ b[8] }}','{{ b[9] }}'
+    )"><i class="fa-solid fa-pen-to-square edit-icon"></i></a>
+                            </td>
 
-            </tr>
-
-            {% endfor %}
-        </table>
-    </section>
-
-    <!-- DOCUMENTS -->
-    <section id="documents" class="content-section" style="display:none;">
-        <h2>Gestion des Documents</h2>
-
-        <h3>Ajouter un document</h3>
-        <form action="/add_document" method="POST" id="form-document">
-
-            <!-- utilisé seulement pour modification -->
-            <input type="hidden" name="id_doc" id="doc_id">
-
-            <label>Bâtiment :</label>
-            <select name="batiment" id="doc_batiment" required>
-                {% for b in batiments %}
-                <option value="{{ b[0] }}">{{ b[1] }}</option>
-                {% endfor %}
-            </select><br>
-
-            <label>Chemin / Nom fichier :</label>
-            <input type="text" name="chemin" id="doc_chemin" required><br>
-
-            <label>Type document :</label>
-            <input type="text" name="type_doc" id="doc_type"><br>
-
-            <button type="submit" id="doc_submit_btn">Ajouter</button>
-        </form>
+                            <td>
+                                <a href="/delete_batiment/{{ b[0] }}" onclick="return confirmDelete();"><i
+                                        class="fa-solid fa-trash delete-icon"></i></a>
+                            </td>
 
 
-        <h3>Liste des Documents</h3>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Bâtiment</th>
-                <th>Chemin</th>
-                <th>Type</th>
-                <th>Modefier</th>
-            </tr>
+                        </tr>
 
-            {% for d in documents %}
-            <tr>
-                <td>{{ d[0] }}</td>
-                <td>{{ d[1] }}</td>
-                <td>{{ d[2] }}</td>
-                <td>{{ d[3] }}</td>
-                <td>
-                    <a href="#" onclick="editDocument(
-                    '{{ d[0] }}',
-                    '{{ d[1] }}',
-                    '{{ d[2] }}',
-                    '{{ d[3] }}'
-                )">
-                        ✏️
-                    </a>
-                </td>
+                        {% endfor %}
+                    </table>
+            </section>
 
-            </tr>
+            <!-- PRESTATAIRES -->
+            <section id="prestataires" class="content-section" style="display:none;">
+                <h2>Gestion des Prestataires</h2>
+                <form action="/add_prestataire" method="POST" id="form-prestataire">
 
-            {% endfor %}
-        </table>
-    </section>
+                    <!-- utilisé seulement pour modification -->
+                    <input type="hidden" name="id_prestataire" id="pres_id">
 
-    <!-- RAPPORTS -->
-    <section id="rapports" class="content-section">
-        <h2>Rapports et Synthèses</h2>
-        <p>
-            Cette section donne accès aux rapports détaillés sur l’état du patrimoine,
-            les interventions, les prestataires et les coûts par quartier.
-        </p>
-        <p>
-            <a href="/rapports" id="cli">Cliquer ici pour voir les rapports détaillés</a>
-        </p>
-    </section>
+                    <label>Nom :</label>
+                    <input type="text" name="nom" id="pres_nom" required><br>
+
+                    <label>Type :</label>
+                    <input type="text" name="type" id="pres_type" required><br>
+
+                    <label>Contact :</label>
+                    <input type="text" name="contact" id="pres_contact"><br>
+
+                    <button type="submit" id="pres_submit_btn">Ajouter</button>
+                </form>
+
+
+                <h3>Liste des Prestataires</h3>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Type</th>
+                        <th>Contact</th>
+                        <th>Modifier</th>
+                        <th>Supprimer</th>
+                    </tr>
+
+                    {% for p in prestataires %}
+                    <tr>
+                        <td>{{ p[0] }}</td>
+                        <td>{{ p[1] }}</td>
+                        <td>{{ p[2] }}</td>
+                        <td>{{ p[3] }}</td>
+                        <td>
+                            <a href="#"
+                                onclick="editPrestataire('{{ p[0] }}','{{ p[1] }}','{{ p[2] }}','{{ p[3] }}')"><i
+                                    class="fa-solid fa-pen-to-square edit-icon"></i></a>
+                        </td>
+                        <td>
+                            <a href="/delete_prestataire/{{ p[0] }}" onclick="return confirmDelete();"><i
+                                    class="fa-solid fa-trash delete-icon"></i></a>
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+                </table>
+            </section>
+
+            <!-- INTERVENTIONS -->
+            <section id="interventions" class="content-section" style="display:none;">
+                <h2>Gestion des Interventions</h2>
+                <form action="/add_intervention" method="POST" id="form-intervention">
+
+                    <!-- utilisé seulement pour modification -->
+                    <input type="hidden" name="id_intervention" id="interv_id">
+
+                    <label>Bâtiment :</label>
+                    <select name="batiment" id="interv_batiment" required>
+                        {% for b in batiments %}
+                        <option value="{{ b[0] }}">{{ b[1] }}</option>
+                        {% endfor %}
+                    </select><br>
+
+                    <label>Prestataire :</label>
+                    <select name="prestataire" id="interv_prestataire" required>
+                        {% for p in prestataires %}
+                        <option value="{{ p[0] }}">{{ p[1] }}</option>
+                        {% endfor %}
+                    </select><br>
+
+                    <label>Date travaux :</label>
+                    <input type="date" name="date_travaux" id="interv_date" required><br>
+
+                    <label>Type travaux :</label>
+                    <input type="text" name="type_travaux" id="interv_type" required><br>
+
+                    <label>Coût :</label>
+                    <input type="number" step="0.01" name="cout" id="interv_cout"><br>
+
+                    <button type="submit" id="interv_submit_btn">Ajouter</button>
+                </form>
+
+
+                <h3>Liste des Interventions</h3>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Bâtiment</th>
+                        <th>Prestataire</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Coût</th>
+                        <th>Modefier</th>
+                        <th>Supprimer</th>
+                    </tr>
+
+                    {% for i in interventions %}
+                    <tr>
+                        <td>{{ i[0] }}</td>
+                        <td>{{ i[1] }}</td>
+                        <td>{{ i[2] }}</td>
+                        <td>{{ i[3] }}</td>
+                        <td>{{ i[4] }}</td>
+                        <td>{{ i[5] }}</td>
+                        <td>
+                            <a href="#" onclick="editIntervention(... )"><i
+                                    class="fa-solid fa-pen-to-square edit-icon"></i></a>
+                        </td>
+                        <td>
+                            <a href="/delete_intervention/{{ i[0] }}" onclick="return confirmDelete();"><i
+                                    class="fa-solid fa-trash delete-icon"></i></a>
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+                </table>
+            </section>
+
+            <!-- INSPECTIONS -->
+            <section id="inspections" class="content-section" style="display:none;">
+                <h2>Gestion des Inspections</h2>
+                <form action="/add_inspection" method="POST" id="form-inspection">
+
+                    <!-- utilisé seulement pour modification -->
+                    <input type="hidden" name="id_inspection" id="insp_id">
+
+                    <label>Bâtiment :</label>
+                    <select name="batiment" id="insp_batiment" required>
+                        {% for b in batiments %}
+                        <option value="{{ b[0] }}">{{ b[1] }}</option>
+                        {% endfor %}
+                    </select><br>
+
+                    <label>Date inspection :</label>
+                    <input type="date" name="date_inspection" id="insp_date" required><br>
+
+                    <label>Rapport :</label>
+                    <textarea name="rapport" id="insp_rapport"></textarea><br>
+
+                    <button type="submit" id="insp_submit_btn">Ajouter</button>
+                </form>
+
+
+                <h3>Liste des Inspections</h3>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Bâtiment</th>
+                        <th>Date</th>
+                        <th>Rapport</th>
+                        <th>Modifier</th>
+                        <th>Supprimer</th>
+
+                    </tr>
+
+                    {% for ins in inspections %}
+                    <tr>
+                        <td>{{ ins[0] }}</td>
+                        <td>{{ ins[1] }}</td>
+                        <td>{{ ins[2] }}</td>
+                        <td>{{ ins[3] }}</td>
+                        <td>
+                            <a href="#" onclick="editInspection(... )"><i
+                                    class="fa-solid fa-pen-to-square edit-icon"></i></a>
+                        </td>
+                        <td>
+                            <a href="/delete_inspection/{{ ins[0] }}" onclick="return confirmDelete();"><i
+                                    class="fa-solid fa-trash delete-icon"></i></a>
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+                </table>
+            </section>
+
+            <!-- DOCUMENTS -->
+            <section id="documents" class="content-section" style="display:none;">
+                <h2>Gestion des Documents</h2>
+                <form action="/add_document" method="POST" id="form-document">
+
+                    <!-- utilisé seulement pour modification -->
+                    <input type="hidden" name="id_doc" id="doc_id">
+
+                    <label>Bâtiment :</label>
+                    <select name="batiment" id="doc_batiment" required>
+                        {% for b in batiments %}
+                        <option value="{{ b[0] }}">{{ b[1] }}</option>
+                        {% endfor %}
+                    </select><br>
+
+                    <label>Chemin / Nom fichier :</label>
+                    <input type="text" name="chemin" id="doc_chemin" required><br>
+
+                    <label>Type document :</label>
+                    <input type="text" name="type_doc" id="doc_type"><br>
+
+                    <button type="submit" id="doc_submit_btn">Ajouter</button>
+                </form>
+
+
+                <h3>Liste des Documents</h3>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Bâtiment</th>
+                        <th>Chemin</th>
+                        <th>Type</th>
+                        <th>Modefier</th>
+                        <th>Supprimer</th>
+                    </tr>
+
+                    {% for d in documents %}
+                    <tr>
+                        <td>{{ d[0] }}</td>
+                        <td>{{ d[1] }}</td>
+                        <td>{{ d[2] }}</td>
+                        <td>{{ d[3] }}</td>
+                        <td>
+                            <a href="#" onclick="editDocument(... )"><i
+                                    class="fa-solid fa-pen-to-square edit-icon"></i></a>
+                        </td>
+                        <td>
+                            <a href="/delete_document/{{ d[0] }}" onclick="return confirmDelete();"><i
+                                    class="fa-solid fa-trash delete-icon"></i></a>
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+                </table>
+            </section>
+
+            <!-- RAPPORTS -->
+            <section id="rapports" class="content-section">
+                <h2>Rapports et Synthèses</h2>
+                <p>
+                    Cette section donne accès aux rapports détaillés sur l’état du patrimoine,
+                    les interventions, les prestataires et les coûts par quartier.
+                </p>
+                <p>
+                    <a href="/rapports" id="cli">Cliquer ici pour voir les rapports détaillés</a>
+                </p>
+            </section>
+        </div>
     </div>
 
     <!-- ========= SCRIPTS ========= -->
@@ -584,19 +696,9 @@
 
     <script>
 
-        /* ------ Gestion des sections (menu) ------ */
-        function openSection(id) {
-            document.querySelectorAll(".content-section").forEach(sec => {
-                sec.style.display = "none";
-            });
-            const el = document.getElementById(id);
-            if (el) el.style.display = "block";
-        }
-        openSection('zones');  // Section par défaut
-
         /* ======================================================
-           =============     CARTE LEAFLET RABAT     ============
-           ====================================================== */
+       =============     CARTE LEAFLET RABAT     ============
+       ====================================================== */
 
         /* ----------- CARTE LIMITÉE À RABAT ----------- */
 
@@ -608,11 +710,11 @@
 
         // Création de la carte
         const map = L.map('map', {
-            maxBounds: rabatBounds,          // Empêche de sortir de Rabat
-            maxBoundsViscosity: 1.0,         // Rebond doux sur les limites
-            minZoom: 12,                     // Empêche de trop dézoomer
+            maxBounds: rabatBounds,
+            maxBoundsViscosity: 1.0,
+            minZoom: 12,
             maxZoom: 18
-        }).setView([34.020, -6.820], 13);    // Centre parfait de Rabat
+        }).setView([34.020, -6.820], 13);
 
         // Fond de carte OSM
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -629,18 +731,7 @@
         /* ======================================================
            =============         MONUMENTS          ==============
            ====================================================== */
-        const monumentsData = [
-            { name: "Tour Hassan", lat: 34.024259, long: -6.822222 },
-            { name: "Mausolée Mohammed V", lat: 34.022805, long: -6.822462 },
-            { name: "Kasbah des Oudayas", lat: 34.031287, long: -6.836695 },
-            { name: "Chellah", lat: 34.010873, long: -6.820784 },
-            { name: "Bab Rouah", lat: 34.017884, long: -6.842290 },
-            { name: "Musée Mohammed VI d’Art Moderne", lat: 34.015145, long: -6.830646 },
-            { name: "Ancienne Médina de Rabat", lat: 34.026836, long: -6.837039 },
-            { name: "Bab El Had", lat: 34.022449, long: -6.837110 },
-            { name: "Bab Oudaïa", lat: 34.030713, long: -6.840454 }
-        ];
-
+        const monumentsData = [{ name: "Tour Hassan", lat: 34.024259, long: -6.822222 }, { name: "Mausolée Mohammed V", lat: 34.022805, long: -6.822462 }, { name: "Kasbah des Oudayas", lat: 34.031287, long: -6.836695 }, { name: "Chellah", lat: 34.010873, long: -6.820784 }, { name: "Bab Rouah", lat: 34.017884, long: -6.842290 }, { name: "Musée Mohammed VI d’Art Moderne", lat: 34.015145, long: -6.830646 }, { name: "Ancienne Médina de Rabat", lat: 34.026836, long: -6.837039 }, { name: "Bab El Had", lat: 34.022449, long: -6.837110 }, { name: "Bab Oudaïa", lat: 34.030713, long: -6.840454 }];
         monumentsData.forEach(m =>
             L.marker([m.lat, m.long]).bindPopup("🏛️ <b>" + m.name + "</b>").addTo(monuments)
         );
@@ -649,36 +740,17 @@
         /* ======================================================
            =============            JARDINS          =============
            ====================================================== */
-        const jardinsData = [
-            { name: "Jardin d’Essais Botaniques", lat: 34.002600, long: -6.846900 },
-            { name: "Forêt Ibn Sina (Hilton)", lat: 34.007500, long: -6.867300 },
-            { name: "Jardin Nouzhat Hassan", lat: 34.019900, long: -6.836000 },
-            { name: "Parc Hassan II", lat: 34.015900, long: -6.824600 },
-            { name: "Jardins Exotiques Bouknadel", lat: 34.140300, long: -6.663100 },
-            { name: "Parc Zoologique de Rabat", lat: 33.977500, long: -6.866900 },
-            { name: "Jardin Tour Hassan", lat: 34.024200, long: -6.821500 },
-            { name: "Jardin de l’Agdal", lat: 34.010800, long: -6.836900 },
-            { name: "Parc Oudayas", lat: 34.027900, long: -6.841400 },
-            { name: "Jardin Ibn Rochd", lat: 34.020300, long: -6.832500 }
-        ];
+        const jardinsData = [{ name: "Jardin d’Essais Botaniques", lat: 34.002600, long: -6.846900 }, { name: "Forêt Ibn Sina (Hilton)", lat: 34.007500, long: -6.867300 }, { name: "Jardin Nouzhat Hassan", lat: 34.019900, long: -6.836000 }, { name: "Parc Hassan II", lat: 34.015900, long: -6.824600 }, { name: "Jardins Exotiques Bouknadel", lat: 34.140300, long: -6.663100 }, { name: "Parc Zoologique de Rabat", lat: 33.977500, long: -6.866900 }, { name: "Jardin Tour Hassan", lat: 34.024200, long: -6.821500 }, { name: "Jardin de l’Agdal", lat: 34.010800, long: -6.836900 }, { name: "Parc Oudayas", lat: 34.027900, long: -6.841400 }, { name: "Jardin Ibn Rochd", lat: 34.020300, long: -6.832500 }];
         jardinsData.forEach(j =>
             L.marker([j.lat, j.long]).bindPopup("🌳 <b>" + j.name + "</b>").addTo(jardins)
         );
 
 
         /* ======================================================
-           ===========    BÂTIMENTS ADMINISTRATIFS    ===========
+           ===========     BÂTIMENTS ADMINISTRATIFS     ==========
            ====================================================== */
-        const buildingsData = [
-            { name: "Parlement du Maroc", lat: 34.019000, long: -6.836000 },
-            { name: "Ministère de l’Intérieur", lat: 34.018200, long: -6.832000 },
-            { name: "Gare Rabat Agdal", lat: 34.002000, long: -6.836000 },
-            { name: "Gare Rabat Ville", lat: 34.020000, long: -6.836000 },
-            { name: "Hôpital Avicenne", lat: 34.006000, long: -6.855000 },
-            { name: "Hôpital Ibn Sina", lat: 34.005000, long: -6.850000 },
-            { name: "Palais Royal", lat: 34.005000, long: -6.824000 },
-            { name: "Siège du Gouvernement", lat: 34.018000, long: -6.829000 }
-        ];
+        const buildingsData = [{ name: "Parlement du Maroc", lat: 34.019000, long: -6.836000 }, { name: "Ministère de l’Intérieur", lat: 34.018200, long: -6.832000 }, { name: "Gare Rabat Agdal", lat: 34.002000, long: -6.836000 }, { name: "Gare Rabat Ville", lat: 34.020000, long: -6.836000 }, { name: "Hôpital Avicenne", lat: 34.006000, long: -6.855000 }, { name: "Hôpital Ibn Sina", lat: 34.005000, long: -6.850000 }, { name: "Palais Royal", lat: 34.005000, long: -6.824000 }, { name: "Siège du Gouvernement", lat: 34.018000, long: -6.829000 }];
+
         buildingsData.forEach(b =>
             L.marker([b.lat, b.long]).bindPopup("🏢 <b>" + b.name + "</b>").addTo(buildings)
         );
@@ -693,57 +765,106 @@
 
 
         /* ======================================================
-           =============        FILTRES CARTE        =============
+           =============      FILTRES RADIO CARTE      ==========
            ====================================================== */
 
-        function showAll() {
-            monuments.addTo(map);
-            buildings.addTo(map);
-            jardins.addTo(map);
-        }
+        document.querySelectorAll("input[name='filter']").forEach(radio => {
 
-        function showMonuments() {
-            map.removeLayer(buildings);
-            map.removeLayer(jardins);
-            monuments.addTo(map);
-        }
+            radio.addEventListener("change", function () {
 
-        function showBuildings() {
-            map.removeLayer(monuments);
-            map.removeLayer(jardins);
-            buildings.addTo(map);
-        }
+                switch (this.value) {
 
-        function showJardins() {
-            map.removeLayer(monuments);
-            map.removeLayer(buildings);
-            jardins.addTo(map);
-        }
+                    case "all":
+                        monuments.addTo(map);
+                        buildings.addTo(map);
+                        jardins.addTo(map);
+                        break;
 
+                    case "monuments":
+                        map.removeLayer(buildings);
+                        map.removeLayer(jardins);
+                        monuments.addTo(map);
+                        break;
 
-        // ===============================
-        // GESTION AFFICHAGE DES SECTIONS
-        // ===============================
+                    case "batiments":
+                        map.removeLayer(monuments);
+                        map.removeLayer(jardins);
+                        buildings.addTo(map);
+                        break;
 
-        function openSection(sectionId) {
-            // masquer toutes les sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.style.display = 'none';
+                    case "jardins":
+                        map.removeLayer(monuments);
+                        map.removeLayer(buildings);
+                        jardins.addTo(map);
+                        break;
+                }
             });
 
-            // afficher la section demandée
-            const target = document.getElementById(sectionId);
-            if (target) {
-                target.style.display = 'block';
-            }
-        }
-
-        // section affichée par défaut au chargement
-        document.addEventListener("DOMContentLoaded", function () {
-            openSection('zones'); // ✅ change si tu veux une autre section au départ
         });
 
+
+        /* ======================================================
+                📌 GESTION DES SECTIONS (MENU)
+           ====================================================== */
+
+        function openSection(id) {
+
+            document.querySelectorAll(".content-section").forEach(sec => {
+                sec.style.display = "none";
+            });
+
+            const el = document.getElementById(id);
+            if (el) el.style.display = "block";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            openSection('zones');
+        });
+
+
+        /* ======================================================
+                📌 FONCTION MODIFIER BÂTIMENT
+           ====================================================== */
+
+        function editBatiment(id, nom, year, etat, lat, lon, adresse, zone, type, prop) {
+
+            openSection('batiments');  // ouvrir section bâtiments
+
+            const form = document.getElementById("form-batiment");
+            form.action = "/update_batiment";
+
+            document.getElementById("id_batiment").value = id;
+            document.getElementById("bat_nom").value = nom;
+            document.getElementById("bat_year").value = year;
+            document.getElementById("bat_etat").value = etat;
+            document.getElementById("bat_lat").value = lat;
+            document.getElementById("bat_lon").value = lon;
+            document.getElementById("bat_adresse").value = adresse;
+            document.getElementById("bat_zone").value = zone;
+            document.getElementById("bat_type").value = type;
+            document.getElementById("bat_prop").value = prop;
+
+            document.getElementById("bat_submit_btn").innerText = "Modifier";
+        }
+
+
+        /* ======================================================
+                📌 RESET FORMULAIRE BÂTIMENT
+           ====================================================== */
+
+        function resetBatimentForm() {
+
+            const form = document.getElementById("form-batiment");
+            form.reset();
+            form.action = "/add_batiment";
+
+            document.getElementById("id_batiment").value = "";
+            document.getElementById("bat_submit_btn").innerText = "Ajouter";
+        }
+
+
     </script>
+
     <script>
         function editBatiment(
             id, nom, year, etat,
@@ -786,6 +907,18 @@
     </script>
 
     <script>
+        function openSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.style.display = "none");
+            document.getElementById(sectionId).style.display = "block";
+
+            // Reset active buttons
+            document.querySelectorAll(".menu-sections button")
+                .forEach(btn => btn.classList.remove("active"));
+
+            // Activate clicked button
+            event.target.classList.add("active");
+        }
+
         function editZone(id, nom) {
             openSection('zones');
 
@@ -988,7 +1121,22 @@
             document.getElementById("doc_submit_btn").innerText = "Ajouter";
         }
     </script>
+    <script>
+        function confirmDelete() {
+            return confirm("❗ Voulez-vous vraiment supprimer cet élément ?");
+        }
+    </script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("overlay");
+            const content = document.getElementById("page-content");
 
+            sidebar.classList.toggle("open");
+            overlay.classList.toggle("active");
+            content.classList.toggle("blur");
+        }
+    </script>
 
 
 
@@ -998,5 +1146,59 @@
 
 
 </body>
+<div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+
+<!-- ================== SIDEBAR ================== -->
+<div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+
+<div id="sidebar" class="sidebar">
+    <div class="toggle-btn" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+
+    <div class="menu">
+
+        <div class="item" onclick="window.location.href='{{ url_for('index') }}'">
+            <i class="fa-solid fa-house"></i>
+            <span>Accueil</span>
+        </div>
+
+        <div class="item" onclick="window.location.href='{{ url_for('rapports') }}'">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Rapports</span>
+        </div>
+
+        <div class="item" onclick="window.location.href='{{ url_for('maintenance') }}'">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            <span>Maintenance</span>
+        </div>
+
+        <div class="item" onclick="window.location.href='{{ url_for('support') }}'">
+            <i class="fa-solid fa-headset"></i>
+            <span>Support</span>
+        </div>
+
+        <div class="item" onclick="window.location.href='{{ url_for('logout') }}'">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Déconnexion</span>
+        </div>
+
+    </div>
+</div>
+
+
+<div id="page-content">
+    <!-- ton contenu -->
+</div>
+
+</div>
+
+<div id="page-content">
+    <!-- contenu -->
+</div>
+
+
 
 </html>
